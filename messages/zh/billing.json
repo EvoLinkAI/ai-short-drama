@@ -1,0 +1,15 @@
+{
+  "transactionType": "消费类型",
+  "startDate": "起始日期",
+  "endDate": "截止日期",
+  "all": "全部",
+  "income": "收入",
+  "expense": "支出",
+  "reset": "重置",
+  "filter": "筛选",
+  "noRecords": "暂无消费记录",
+  "accountRecharge": "余额充值",
+  "serviceConsumption": "功能消耗",
+  "balance": "账户余额",
+  "allTypes": "所有类型"
+}

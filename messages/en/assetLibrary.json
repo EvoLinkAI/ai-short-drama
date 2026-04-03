@@ -1,0 +1,17 @@
+{
+  "title": "Asset Library",
+  "button": "Assets",
+  "characters": "Characters",
+  "locations": "Locations",
+  "props": "Props",
+  "noCharacters": "No characters added yet",
+  "noLocations": "No locations added yet",
+  "noProps": "No props added yet",
+  "addCharacter": "Add Character",
+  "addLocation": "Add Location",
+  "addProp": "Add Prop",
+  "generateImage": "Generate Image",
+  "regenerateImage": "Regenerate",
+  "analyzeAssets": "Scan Assets",
+  "analyzing": "Processing..."
+}

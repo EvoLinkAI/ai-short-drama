@@ -1,0 +1,40 @@
+{
+  "hero": {
+    "titleLine1": "用 AI 将故事变成",
+    "titleHighlight": "短剧",
+    "titleSuffix": "",
+    "subtitle": "从创意到多场景视频只需几分钟 — 由 Kling、Seedance 2.0 等影视级 AI 模型驱动。",
+    "ctaLoggedIn": "开始创作",
+    "ctaLoggedOut": "免费开始创作",
+    "noCreditCard": "无需信用卡"
+  },
+  "showcase": {
+    "title": "用 AIDrama 创作的短剧"
+  },
+  "title": "AI Video Studio",
+  "subtitle": "AI影视Studio",
+  "enterWorkspace": "进入工作区",
+  "loading": "加载中...",
+  "getStarted": "立即体验",
+  "learnMore": "了解更多",
+  "features": {
+    "title": "释放无限创造力",
+    "subtitle": "全流程 AI 辅助，从剧本到成片",
+    "character": {
+      "title": "角色工坊",
+      "description": "打造独一无二的动漫角色，保持高度一致性"
+    },
+    "storyboard": {
+      "title": "智能分镜",
+      "description": "文字一键转分镜，精准把控叙事节奏"
+    },
+    "world": {
+      "title": "世界构建",
+      "description": "沉浸式场景生成，构建宏大的故事背景"
+    }
+  },
+  "footer": {
+    "copyright": "2026 AIDrama. All rights reserved.",
+    "poweredBy": "由 EvoLinkAI 提供技术支持"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "config": "1. Config",
+  "assets": "2. Asset Parsing",
+  "storyboard": "3. Storyboard Studio",
+  "videos": "4. Video Synthesis",
+  "voice": "5. Voice Synthesis"
+}

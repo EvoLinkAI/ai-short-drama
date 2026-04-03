@@ -1,0 +1,77 @@
+{
+  "pageTitle": "主页重设计实验",
+  "switchVariant": "切换布局",
+  "currentVariant": "当前布局",
+  "inputPlaceholder": "描述你想创作的故事情节...",
+  "startCreation": "立即创作",
+  "recentProjects": "近期项目",
+  "viewAll": "查看全部",
+  "noRecentProjects": "暂无近期项目",
+  "latestUpdate": "最近更新",
+  "style": "风格",
+  "ratio": "比例",
+  "quality": "质量",
+  "model": "模型",
+  "styles": {
+    "anime": "日系动漫",
+    "realistic": "写实风格",
+    "watercolor": "水彩风格",
+    "cyberpunk": "赛博朋克",
+    "ghibli": "吉卜力",
+    "ink": "国风水墨"
+  },
+  "ratios": {
+    "r16_9": "16:9 横屏",
+    "r9_16": "9:16 竖屏",
+    "r1_1": "1:1 方形",
+    "r4_3": "4:3 经典"
+  },
+  "qualities": {
+    "standard": "标准",
+    "high": "高清",
+    "ultra": "超清"
+  },
+  "quickActions": {
+    "title": "快速开始",
+    "fromNovel": "从小说导入",
+    "fromScript": "从剧本创建",
+    "fromScratch": "空白创建",
+    "fromTemplate": "模板创建"
+  },
+  "mockProject": {
+    "name1": "校园青春物语",
+    "desc1": "记录高中岁月的温情浪漫故事",
+    "name2": "星际迷途者",
+    "desc2": "深空冒险科幻短剧",
+    "name3": "古风仙侠录",
+    "desc3": "修仙世界的爱恨纠葛与命运轮回",
+    "name4": "都市奇缘",
+    "desc4": "繁华都市中的意外相遇",
+    "name5": "末日行者",
+    "desc5": "末日废土上的生死存亡之旅"
+  },
+  "variantNames": {
+    "v1": "网格卡片",
+    "v2": "横向滚动",
+    "v3": "紧凑列表",
+    "v4": "突出首项",
+    "v5": "极简列表"
+  },
+  "variantDescs": {
+    "v1": "五列标准网格，还原系统真实卡片样式",
+    "v2": "单行横向大卡片，左右滑动浏览",
+    "v3": "紧凑单行列表，信息左右排布",
+    "v4": "第一项放大展示+右侧小卡片网格",
+    "v5": "与输入框同宽的极简圆点条目列表"
+  },
+  "episodes": "章节",
+  "images": "图片",
+  "videos": "视频",
+  "updated": "更新于",
+  "ago": {
+    "justNow": "刚刚",
+    "minutesAgo": "{n}分钟前",
+    "hoursAgo": "{n}小时前",
+    "daysAgo": "{n}天前"
+  }
+}

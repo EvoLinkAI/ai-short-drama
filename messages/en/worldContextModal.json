@@ -1,0 +1,6 @@
+{
+    "title": "World Building & Character Profiles",
+    "description": "Configure global character appearances, scene styles, and ambient environment descriptions",
+    "placeholder": "Example:\n【Protagonist】Alex, 26, dark brown crew cut, usually wearing a worn leather jacket, deep and distant gaze.\n【Heroine】Lily, 23, long black hair, gentle yet stubborn personality, prefers clean and simple outfits.\n【Scene】Cyberpunk metropolis in 2077, neon lights weaving through steam and mist, perpetually shrouded in light and shadow...",
+    "hint": "These settings are automatically inherited by all episodes and serve as the foundation for AI image generation and character creation."
+}

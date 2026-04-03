@@ -1,0 +1,23 @@
+{
+    "UNAUTHORIZED": "请先登录后再操作",
+    "FORBIDDEN": "您没有访问权限",
+    "NOT_FOUND": "请求的资源不存在",
+    "INSUFFICIENT_BALANCE": "账户余额不足，请先充值再试",
+    "RATE_LIMIT": "请求频率超限，请等待 {retryAfter} 秒后重试",
+    "MODEL_NOT_OPEN": "模型权限未开通。请前往 https://console.volcengine.com/ark/region:ark+cn-beijing/openManagement?LLM=%7B%7D&advancedActiveKey=model ，在模型管理页面点击右上角「一键开通所有模型」",
+    "MODEL_NOT_REGISTERED": "未找到该模型，请在设置中添加对应模型后重试",
+    "MODEL_NOT_CONFIGURED": "暂无可用模型，请在「设置」页面添加所需类型的模型后重试",
+    "QUOTA_EXCEEDED": "配额已耗尽，请稍后重试",
+    "GENERATION_FAILED": "生成任务失败，请重新尝试",
+    "GENERATION_TIMEOUT": "生成任务超时，请重新提交",
+    "SENSITIVE_CONTENT": "内容可能涉及敏感信息",
+    "INVALID_PARAMS": "请求参数有误",
+    "MISSING_CONFIG": "请先完成模型配置后再操作",
+    "INTERNAL_ERROR": "服务器发生错误，请稍候再试",
+    "NETWORK_ERROR": "网络连接异常，请检查您的网络",
+    "EMPTY_RESPONSE": "模型返回了空内容，请稍后再次尝试",
+    "EXTERNAL_ERROR": "第三方服务暂时不可用，请稍后再试",
+    "TASK_NOT_READY": "任务正在处理中，请稍候",
+    "NO_RESULT": "该任务暂无结果",
+    "CONFLICT": "资源状态发生冲突"
+}

@@ -1,0 +1,23 @@
+{
+    "UNAUTHORIZED": "Please log in to continue",
+    "FORBIDDEN": "You do not have permission to access this",
+    "NOT_FOUND": "The requested resource could not be found",
+    "INSUFFICIENT_BALANCE": "Your balance is too low. Please add funds and try again",
+    "RATE_LIMIT": "Rate limit reached. Wait {retryAfter} seconds before trying again",
+    "MODEL_NOT_OPEN": "Model permission is not activated. Go to https://console.volcengine.com/ark/region:ark+cn-beijing/openManagement?LLM=%7B%7D&advancedActiveKey=model and click \"Activate all models\" in the top-right of Model Management",
+    "MODEL_NOT_REGISTERED": "Model not found. Please register it in your configuration first",
+    "MODEL_NOT_CONFIGURED": "No model set up yet. Visit Settings to add the appropriate model type.",
+    "QUOTA_EXCEEDED": "Your quota has been exhausted. Please try again later",
+    "GENERATION_FAILED": "Generation task failed. Please try again",
+    "GENERATION_TIMEOUT": "The generation request timed out. Please resubmit",
+    "SENSITIVE_CONTENT": "Content may contain sensitive material",
+    "INVALID_PARAMS": "Invalid request parameters",
+    "MISSING_CONFIG": "Please complete your model configuration before proceeding",
+    "INTERNAL_ERROR": "An internal server error occurred. Please try again shortly",
+    "NETWORK_ERROR": "Connection error. Please verify your network settings",
+    "EMPTY_RESPONSE": "The model returned no usable output. Please try again later",
+    "EXTERNAL_ERROR": "A third-party service is currently unavailable. Please retry later",
+    "TASK_NOT_READY": "Task is still in progress",
+    "NO_RESULT": "No result available for this task",
+    "CONFLICT": "A resource conflict was detected"
+}

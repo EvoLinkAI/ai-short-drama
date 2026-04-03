@@ -1,0 +1,17 @@
+{
+  "title": "素材库",
+  "button": "素材库",
+  "characters": "角色",
+  "locations": "场景",
+  "props": "道具",
+  "noCharacters": "尚无角色数据",
+  "noLocations": "尚无场景数据",
+  "noProps": "尚无道具数据",
+  "addCharacter": "新增角色",
+  "addLocation": "新增场景",
+  "addProp": "新增道具",
+  "generateImage": "生成图片",
+  "regenerateImage": "重新生成",
+  "analyzeAssets": "解析素材",
+  "analyzing": "正在解析..."
+}

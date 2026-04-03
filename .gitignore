@@ -1,0 +1,80 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# ── Dependencies ──────────────────────────────────────────────────────────────
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ── Build / Next.js ───────────────────────────────────────────────────────────
+/.next/
+/out/
+/build
+/src/generated/prisma
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+/coverage
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+/logs
+*.log
+docker-logs/
+
+# ── Environment variables ─────────────────────────────────────────────────────
+.env
+.env.local
+.env.test
+.env.*.local
+
+# ── IDE & AI tools ────────────────────────────────────────────────────────────
+.DS_Store
+*.pem
+.vercel
+.vscode/
+.idea/
+.claude/
+.cursor/
+.gemini/
+.artifacts/
+.agent/
+.shared/
+.ace-tool/
+
+# ── Database ──────────────────────────────────────────────────────────────────
+*.db
+*.db-journal
+prisma/data/
+
+# ── Uploads & data ────────────────────────────────────────────────────────────
+uploads/
+/data/
+certificates
+
+# ── Temporary files ───────────────────────────────────────────────────────────
+tmp/
+.tmp-old-snapshot-*/
+debug-request.json
+.tmp_check_task.ts
+extract_chinese.py
+
+# ── Project-specific (internal, not for public) ───────────────────────────────
+.audit/
+AGENTS.md
+agent/
+docs/
+scripts/migrations/reports/
+scripts/tmp-*
+
+# ── GitHub CI workflows ───────────────────────────────────────────────────────
+.github/*
+!.github/workflows/

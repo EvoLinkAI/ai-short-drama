@@ -1,0 +1,40 @@
+{
+  "hero": {
+    "titleLine1": "Turn Stories into",
+    "titleHighlight": "Short Dramas",
+    "titleSuffix": " with AI",
+    "subtitle": "Go from Idea to Multi-scene Video in Minutes — Powered by Cinematic AI Models like Kling and Seedance 2.0.",
+    "ctaLoggedIn": "Start Creating",
+    "ctaLoggedOut": "Start Creating — It's Free",
+    "noCreditCard": "No credit card required"
+  },
+  "showcase": {
+    "title": "Short Dramas Created with AIDrama"
+  },
+  "title": "AI Video Studio",
+  "subtitle": "AI Film & TV Studio",
+  "enterWorkspace": "Enter Workspace",
+  "loading": "Loading...",
+  "getStarted": "Get Started",
+  "learnMore": "Learn More",
+  "features": {
+    "title": "Unleash Infinite Creativity",
+    "subtitle": "Full-process AI assistance, from script to final cut",
+    "character": {
+      "title": "Character Workshop",
+      "description": "Create unique anime characters with high consistency"
+    },
+    "storyboard": {
+      "title": "Smart Storyboard",
+      "description": "One-click text to storyboard, precise narrative control"
+    },
+    "world": {
+      "title": "World Building",
+      "description": "Immersive scene generation to build grand story backgrounds"
+    }
+  },
+  "footer": {
+    "copyright": "2026 AIDrama. All rights reserved.",
+    "poweredBy": "Powered by EvoLinkAI"
+  }
+}

@@ -1,0 +1,156 @@
+# AIDrama Studio — AI-powered novel-to-video production platform
+# https://github.com/EvoLinkAI/ai-short-drama
+# Copyright (c) 2026 EvoLinkAI. MIT License.
+
+services:
+  # ==================== MySQL ====================
+  mysql:
+    image: mysql:8.0
+    container_name: aidrama-studio-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: aidrama-studio123
+      MYSQL_DATABASE: aidrama-studio
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "23306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command:
+      - "--default-authentication-plugin=mysql_native_password"
+      - "--sql_mode=STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -paidrama-studio123"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+
+  # ==================== Redis ====================
+  redis:
+    image: redis:7-alpine
+    container_name: aidrama-studio-redis
+    restart: unless-stopped
+    ports:
+      - "26379:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 5s
+
+  # ==================== MinIO ====================
+  minio:
+    image: minio/minio:RELEASE.2025-02-28T09-55-16Z
+    container_name: aidrama-studio-minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    ports:
+      - "29000:9000"
+      - "29001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+
+  # ==================== App (Next.js + Workers) ====================
+  app:
+    image: aidrama-studio:local
+    container_name: aidrama-studio-app
+    restart: unless-stopped
+    environment:
+      # Database (points to internal MySQL service, use service name "mysql" not "localhost")
+      DATABASE_URL: "mysql://root:aidrama-studio123@mysql:3306/aidrama-studio"
+      # Redis (points to internal Redis service, use service name "redis")
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_USERNAME: ""
+      REDIS_PASSWORD: ""
+      REDIS_TLS: ""
+      # Storage: default MinIO (S3-compatible)
+      STORAGE_TYPE: ${STORAGE_TYPE:-minio}
+      MINIO_ENDPOINT: "${MINIO_ENDPOINT:-http://minio:9000}"
+      MINIO_REGION: "auto"
+      MINIO_BUCKET: "aidrama-studio"
+      MINIO_ACCESS_KEY: "${MINIO_ACCESS_KEY:-minioadmin}"
+      MINIO_SECRET_KEY: "${MINIO_SECRET_KEY:-minioadmin}"
+      MINIO_FORCE_PATH_STYLE: "true"
+      # External URL (browser-facing)
+      NEXTAUTH_URL: "http://localhost:23000"  # production: https://aidrama.dev
+      # Internal self-call URL (server-side API and file fetches)
+      INTERNAL_APP_URL: "http://127.0.0.1:3000"
+      NEXTAUTH_SECRET: "${NEXTAUTH_SECRET:-dev-only-change-in-production}"
+      # Internal secrets
+      CRON_SECRET: "${CRON_SECRET:-dev-only-cron-secret}"
+      INTERNAL_TASK_TOKEN: "${INTERNAL_TASK_TOKEN:-dev-only-task-token}"
+      API_ENCRYPTION_KEY: "${API_ENCRYPTION_KEY:-dev-only-encryption-key}"
+      # Worker configuration
+      WATCHDOG_INTERVAL_MS: "30000"
+      TASK_HEARTBEAT_TIMEOUT_MS: "90000"
+      QUEUE_CONCURRENCY_IMAGE: "50"
+      QUEUE_CONCURRENCY_VIDEO: "50"
+      QUEUE_CONCURRENCY_VOICE: "20"
+      QUEUE_CONCURRENCY_TEXT: "50"
+      # Bull Board
+      BULL_BOARD_HOST: "127.0.0.1"
+      BULL_BOARD_PORT: "3010"
+      BULL_BOARD_BASE_PATH: "/admin/queues"
+      BULL_BOARD_USER: "${BULL_BOARD_USER:-admin}"
+      BULL_BOARD_PASSWORD: "${BULL_BOARD_PASSWORD:-changeme}"
+      # Logging
+      LOG_UNIFIED_ENABLED: "true"
+      LOG_LEVEL: "INFO"
+      LOG_FORMAT: "json"
+      LOG_DEBUG_ENABLED: "false"
+      LOG_AUDIT_ENABLED: "true"
+      LOG_SERVICE: "aidrama-studio"
+      LOG_REDACT_KEYS: "password,token,apiKey,apikey,authorization,cookie,secret,access_token,refresh_token"
+      # Billing
+      BILLING_MODE: "OFF"
+      # Streaming
+      LLM_STREAM_EPHEMERAL_ENABLED: "true"
+    ports:
+      - "23000:3000"
+      - "23010:3010"
+    volumes:
+      - ./data:/app/data
+      - ./docker-logs:/app/logs
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    command: >
+      sh -c "
+        npx prisma db push --skip-generate &&
+        (sleep 5 && echo '' &&
+        echo '┌──────────────────────────────────────────────────┐' &&
+        echo '│  ✦  AI Drama Studio  ·  Ready for Production  ✦  │' &&
+        echo '│                                                  │' &&
+        echo '│  APP:   http://localhost:23000                   │' &&
+        echo '│  QUEUE: http://localhost:23010/admin/queues      │' &&
+        echo '│                                                  │' &&
+        echo '│  HTTPS: caddy run --config Caddyfile             │' &&
+        echo '│         then: https://localhost:1443             │' &&
+        echo '└──────────────────────────────────────────────────┘' &&
+        echo '') &
+        npm run start
+      "
+
+volumes:
+  mysql_data:
+  redis_data:
+  minio_data:

@@ -1,0 +1,70 @@
+{
+    "title": "Script Editor",
+    "scriptBreakdown": "Shot Breakdown",
+    "splitCount": "{count} shots created",
+    "noClips": "No shots yet — generate from the story view first",
+    "segment": {
+        "title": "Shot {index}",
+        "selected": "(Active)"
+    },
+    "inSceneAssets": "Scene Assets",
+    "currentSelected": "Viewing: Shot {number}",
+    "assetView": {
+        "allClips": "All Shots",
+        "viewingClip": "Shot {number}"
+    },
+    "asset": {
+        "generateCharacter": "Generate character image →",
+        "generateLocation": "Generate location image →",
+        "removeCharacterConfirm": "Remove this character from the current shot?",
+        "removeLocationConfirm": "Remove this location from the current shot?",
+        "removeFromClip": "Remove from this shot",
+        "noAudio": "No audio",
+        "playing": "Playing",
+        "listen": "Preview",
+        "activeCharacters": "Characters On Screen",
+        "activeLocations": "Locations On Screen",
+        "selectCharacter": "Choose a character or appearance to add",
+        "selectLocation": "Choose a location to add",
+        "loadingAssets": "Loading...",
+        "appearanceCount": "{count} appearances",
+        "added": "Added",
+        "primary": "Primary",
+        "subAppearance": "Sub-appearance",
+        "defaultAppearance": "Default",
+        "clickToRemove": "Remove {name}",
+        "clickToAdd": "Add {name}"
+    },
+    "screenplay": {
+        "scene": "Scene {number}",
+        "location": "Location:",
+        "locationTime": "Time:",
+        "day": "Day",
+        "night": "Night",
+        "dawn": "Dawn",
+        "dusk": "Dusk",
+        "dialogue": "Dialogue",
+        "action": "Action",
+        "narration": "Narration",
+        "content": "Source Text",
+        "noContent": "No content",
+        "clickToEdit": "Click to edit",
+        "interior": "INT",
+        "exterior": "EXT",
+        "characters": "Characters",
+        "noCharacter": "No characters",
+        "noLocation": "No locations",
+        "noCharacterInClip": "No characters in this shot"
+    },
+    "confirm": {
+        "removeCharacter": "Remove this character from the current shot?",
+        "removeLocation": "Remove this location from the current shot?"
+    },
+    "generate": {
+        "missingAssets": "{count} assets have no images yet",
+        "missingAssetsTip": "Go to",
+        "missingAssetsTipLink": "to generate images for all characters and locations",
+        "generating": "Generating frames...",
+        "startGenerate": "Confirm and Generate →"
+    }
+}

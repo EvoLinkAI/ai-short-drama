@@ -1,0 +1,70 @@
+{
+    "title": "剧本编辑器",
+    "scriptBreakdown": "分镜拆分",
+    "splitCount": "已拆分 {count} 个镜头",
+    "noClips": "暂无镜头，请先在故事视图中生成分镜",
+    "segment": {
+        "title": "镜头 {index}",
+        "selected": "（已选中）"
+    },
+    "inSceneAssets": "当前场景资产",
+    "currentSelected": "正在查看：镜头 {number}",
+    "assetView": {
+        "allClips": "所有镜头",
+        "viewingClip": "镜头 {number}"
+    },
+    "asset": {
+        "generateCharacter": "点击生成角色形象 →",
+        "generateLocation": "点击生成场景图像 →",
+        "removeCharacterConfirm": "确定要将此角色从当前镜头中移除吗？",
+        "removeLocationConfirm": "确定要将此场景从当前镜头中移除吗？",
+        "removeFromClip": "从此镜头移除",
+        "noAudio": "暂无音频",
+        "playing": "播放中",
+        "listen": "试听",
+        "activeCharacters": "登场角色",
+        "activeLocations": "登场场景",
+        "selectCharacter": "选择要加入的角色或形象",
+        "selectLocation": "选择要加入的场景",
+        "loadingAssets": "正在加载资产...",
+        "appearanceCount": "{count} 个形象",
+        "added": "已添加",
+        "primary": "主要形象",
+        "subAppearance": "附属形象",
+        "defaultAppearance": "默认形象",
+        "clickToRemove": "点击移除 {name}",
+        "clickToAdd": "点击添加 {name}"
+    },
+    "screenplay": {
+        "scene": "第 {number} 场",
+        "location": "地点：",
+        "locationTime": "时间：",
+        "day": "日景",
+        "night": "夜景",
+        "dawn": "晨景",
+        "dusk": "黄昏",
+        "dialogue": "对白",
+        "action": "动作",
+        "narration": "旁白",
+        "content": "原文",
+        "noContent": "暂无内容",
+        "clickToEdit": "点击此处编辑",
+        "interior": "内景",
+        "exterior": "外景",
+        "characters": "角色列表",
+        "noCharacter": "暂无角色信息",
+        "noLocation": "暂无场景信息",
+        "noCharacterInClip": "当前镜头暂无角色"
+    },
+    "confirm": {
+        "removeCharacter": "确定要从当前镜头移除该角色吗？",
+        "removeLocation": "确定要从当前镜头移除该场景吗？"
+    },
+    "generate": {
+        "missingAssets": "还有 {count} 个资产尚未生成图像",
+        "missingAssetsTip": "请先前往",
+        "missingAssetsTipLink": "为所有角色和场景生成形象",
+        "generating": "画面生成中，请稍候...",
+        "startGenerate": "确认并开始生成画面 →"
+    }
+}

@@ -1,0 +1,18 @@
+{
+  "storyboard": "Storyboard",
+  "storyboard_candidate": "Shot Candidates",
+  "character": "Character",
+  "location": "Location",
+  "video": "Video",
+  "analyze": "Analyze",
+  "analyze_character": "Character Analysis",
+  "analyze_location": "Scene Analysis",
+  "clips": "Scene Segmentation",
+  "storyboard_text_plan": "Shot Planning",
+  "storyboard_text_detail": "Shot Refinement",
+  "tts": "Text-to-Speech",
+  "regenerate": "Regenerate",
+  "voice-generate": "Dubbing",
+  "voice-design": "Voice Styling",
+  "lip-sync": "Lip Sync"
+}

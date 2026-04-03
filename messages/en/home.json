@@ -1,0 +1,15 @@
+{
+  "title": "Quick Start",
+  "subtitle": "Describe your story and let AI generate cinematic short dramas",
+  "inputPlaceholder": "Enter your story idea, novel excerpt, or script outline...",
+  "startCreation": "Start Creating",
+  "recentProjects": "Recent Projects",
+  "viewAll": "View All Projects",
+  "noProjects": "No projects yet. Start your first creation from above!",
+  "ago": {
+    "justNow": "Just now",
+    "minutesAgo": "{n}m ago",
+    "hoursAgo": "{n}h ago",
+    "daysAgo": "{n}d ago"
+  }
+}
