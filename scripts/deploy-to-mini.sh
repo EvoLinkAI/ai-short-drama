@@ -61,7 +61,7 @@ ssh "$MINI_USER@$MINI_HOST" bash -s << 'REMOTE_EOF'
 
   cd ~/aidrama-studio
   echo "  Restarting services..."
-  docker compose up -d
+  docker compose up -d --force-recreate
   echo "  Waiting for startup..."
   sleep 10
 

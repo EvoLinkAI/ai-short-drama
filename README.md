@@ -32,20 +32,19 @@ You paste in your story, and the AI handles everything: extracting characters, g
 
 ---
 
-## Demo Videos
+## Demo
 
-AI-generated short dramas created entirely by AIDrama Studio — from text to video, fully automated:
+AI-generated short dramas — from text to video, fully automated:
 
 <div align="center">
 
-| | | |
-|:---:|:---:|:---:|
-| [▶ Romance](https://github.com/user-attachments/assets/a878aa89-4525-4912-93a7-a6ef868ba22a) | [▶ Sci-Fi](https://github.com/user-attachments/assets/bde9bf8c-dee0-441e-9e9f-81e29c32937d) | [▶ Action](https://github.com/user-attachments/assets/97cfebf2-7ed8-4e36-85f0-e3abbbd177fd) |
-| [▶ Anime](https://github.com/user-attachments/assets/590efe50-be13-46fd-86db-9d5ace76ac4d) | [▶ Drama](https://github.com/user-attachments/assets/8f8303e9-b575-4368-ba14-9410283ce8c2) | [▶ Fantasy](https://github.com/user-attachments/assets/e11f0011-ac32-4e63-9a01-133bcbac97cc) |
+<a href="https://github.com/user-attachments/assets/a878aa89-4525-4912-93a7-a6ef868ba22a"><img src="assets/demo-romance.png" width="300" alt="Romance Drama Demo"></a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://github.com/user-attachments/assets/590efe50-be13-46fd-86db-9d5ace76ac4d"><img src="assets/demo-anime.png" width="300" alt="Anime Drama Demo"></a>
+
+**Click to watch** — generated with Seedance 2.0, no manual editing.
 
 </div>
-
-> Generated using Seedance 2.0 video model. No manual editing. Try it yourself at [aidrama.dev](https://aidrama.dev).
 
 ---
 
@@ -300,13 +299,9 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## About
 
-**AIDrama Studio** is built and maintained by [EvoLinkAI](https://github.com/EvoLinkAI).
+**AIDrama Studio** — Free AI-powered novel-to-video production platform with 20+ models (Kling, Seedance 2.0, FLUX, Veo, GPT-4o). Fully automated pipeline from text to complete short drama video. Self-hosted, customizable, MIT licensed.
 
-- Website: [aidrama.dev](https://aidrama.dev)
-- AI Provider: [evolink.ai](https://evolink.ai)
-- GitHub: [github.com/EvoLinkAI](https://github.com/EvoLinkAI)
-
----
+Built by [EvoLinkAI](https://github.com/EvoLinkAI) · [aidrama.dev](https://aidrama.dev) · Powered by [EvoLink API](https://evolink.ai)
 
 ## License
 
@@ -317,7 +312,5 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 <div align="center">
 
 **If this project helps you, give it a ⭐!**
-
-Powered by [EvoLinkAI](https://evolink.ai)
 
 </div>

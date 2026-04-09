@@ -11,6 +11,7 @@ RUN npm ci
 FROM node:20-alpine AS build
 WORKDIR /app
 
+ARG CACHE_BUST=0
 COPY --from=install /app/node_modules ./node_modules
 COPY . .
 

@@ -10,7 +10,7 @@
   },
   "homepage": "https://aidrama.dev",
   "author": "EvoLinkAI <dev@evolinkai.com> (https://github.com/EvoLinkAI)",
-  "keywords": ["ai", "video", "short-drama", "novel-to-video", "nextjs", "remotion", "bullmq"],
+  "keywords": ["ai", "video", "short-drama", "novel-to-video", "text-to-video", "ai-video-generation", "ai-image-generation", "content-creation", "generative-ai", "kling-ai", "seedance", "storyboard", "ai-voiceover", "nextjs", "typescript", "open-source", "self-hosted"],
   "engines": {
     "node": ">=18.18.0",
     "npm": ">=9.0.0"
