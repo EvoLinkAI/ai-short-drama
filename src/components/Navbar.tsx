@@ -35,7 +35,7 @@ export default function Navbar() {
         <div className="flex items-center">
           <Link href={{ pathname: '/' as never }} className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo-small.png" alt="AIDrama" className="h-8 w-8" />
+            <img src="/logo-small.png" alt="AIDrama" className="h-8 w-auto" />
             <span className="text-xl font-bold tracking-tight text-[#171717]">AIDrama</span>
           </Link>
         </div>

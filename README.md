@@ -316,9 +316,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 <div align="center">
 
-**If this project helps you, give it a star!**
-
-[![Star History Chart](https://api.star-history.com/svg?repos=EvoLinkAI/ai-short-drama&type=Date)](https://star-history.com/#EvoLinkAI/ai-short-drama&Date)
+**If this project helps you, give it a ⭐!**
 
 Powered by [EvoLinkAI](https://evolink.ai)
 

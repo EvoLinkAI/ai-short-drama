@@ -22,7 +22,7 @@ export function Footer() {
           <div className="flex-1 max-w-xs">
             <div className="flex items-center gap-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo-small.png" alt="AIDrama" className="h-6 w-6" />
+              <img src="/logo-small.png" alt="AIDrama" className="h-6 w-auto" />
               <span className="text-base font-semibold tracking-tight text-[#171717]">AIDrama</span>
             </div>
             <p className="mt-2 text-sm leading-relaxed text-[#737373]">

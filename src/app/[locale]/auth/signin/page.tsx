@@ -44,7 +44,11 @@ export default function SignIn() {
       {/* Left — Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-8">
         <div className="w-full max-w-sm">
-          <span className="text-2xl font-bold tracking-tight text-[#171717] mb-8 block">AiDrama</span>
+          <div className="flex items-center gap-2 mb-8">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-small.png" alt="AIDrama" className="h-8 w-auto" />
+            <span className="text-2xl font-bold tracking-tight text-[#171717]">AIDrama</span>
+          </div>
 
           <h1 className="text-2xl font-semibold text-[#171717]">
             Welcome back
