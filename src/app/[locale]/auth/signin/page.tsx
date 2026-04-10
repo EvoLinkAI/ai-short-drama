@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import { signIn } from "next-auth/react"
+import { useTranslations } from 'next-intl'
 import { Link, useRouter } from '@/i18n/navigation'
 import { buildAuthenticatedHomeTarget } from '@/lib/home/default-route'
 
 export default function SignIn() {
+  const t = useTranslations('auth')
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
@@ -25,15 +27,19 @@ export default function SignIn() {
       })
 
       if (result?.error === 'RateLimited') {
-        setError("Too many attempts. Please try again later.")
+        setError(t('errors.rateLimited'))
       } else if (result?.error) {
-        setError("Invalid username or password.")
+        // NextAuth credentials provider returns `null` from authorize() for
+        // both "user not found" and "wrong password". This is intentional
+        // (prevents user enumeration), but the copy should not suggest the
+        // input format was invalid — only that the credentials did not match.
+        setError(t('errors.loginIncorrect'))
       } else {
         router.push(buildAuthenticatedHomeTarget())
         router.refresh()
       }
     } catch {
-      setError("An error occurred. Please try again.")
+      setError(t('errors.loginGeneric'))
     } finally {
       setLoading(false)
     }
@@ -51,10 +57,10 @@ export default function SignIn() {
           </div>
 
           <h1 className="text-2xl font-semibold text-[#171717]">
-            Welcome back
+            {t('signin.title')}
           </h1>
           <p className="mt-2 text-[#737373]">
-            Sign in to your account
+            {t('signin.subtitle')}
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
@@ -63,7 +69,7 @@ export default function SignIn() {
                 htmlFor="username"
                 className="block text-sm font-medium text-[#737373] mb-1.5"
               >
-                Username
+                {t('signin.usernameLabel')}
               </label>
               <input
                 id="username"
@@ -74,7 +80,7 @@ export default function SignIn() {
                 onChange={(e) => setUsername(e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-[#e5e5e5] rounded-md bg-white text-[#171717] placeholder:text-[#a3a3a3] focus:border-black focus:ring-2 focus:ring-black/5 outline-none transition"
-                placeholder="Enter your username"
+                placeholder={t('signin.usernamePlaceholder')}
               />
             </div>
 
@@ -83,7 +89,7 @@ export default function SignIn() {
                 htmlFor="password"
                 className="block text-sm font-medium text-[#737373] mb-1.5"
               >
-                Password
+                {t('signin.passwordLabel')}
               </label>
               <input
                 id="password"
@@ -94,7 +100,7 @@ export default function SignIn() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-[#e5e5e5] rounded-md bg-white text-[#171717] placeholder:text-[#a3a3a3] focus:border-black focus:ring-2 focus:ring-black/5 outline-none transition"
-                placeholder="Enter your password"
+                placeholder={t('signin.passwordPlaceholder')}
               />
             </div>
 
@@ -109,17 +115,17 @@ export default function SignIn() {
               disabled={loading}
               className="w-full py-3 bg-black text-white rounded-md font-medium hover:bg-[#262626] transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? t('signin.submitLoading') : t('signin.submit')}
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-[#737373]">
-            Don&apos;t have an account?{" "}
+            {t('signin.noAccount')}{" "}
             <Link
               href={{ pathname: '/auth/signup' }}
               className="text-black font-medium hover:underline"
             >
-              Sign up
+              {t('signin.signupLink')}
             </Link>
           </p>
         </div>
@@ -128,14 +134,11 @@ export default function SignIn() {
       {/* Right — Brand panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#1a1a1a] items-center justify-center rounded-l-3xl relative overflow-hidden">
         <div className="relative z-10 max-w-md px-12 text-center">
-          <h2 className="text-4xl font-mono font-semibold text-white leading-tight">
-            Transform Stories
-            <br />
-            Into Videos
+          <h2 className="text-4xl font-mono font-semibold text-white leading-tight whitespace-pre-line">
+            {t('brand.headline')}
           </h2>
           <p className="mt-4 text-gray-400 text-lg">
-            AI-powered novel-to-video production platform.
-            Turn your imagination into cinematic reality.
+            {t('brand.description')}
           </p>
         </div>
 

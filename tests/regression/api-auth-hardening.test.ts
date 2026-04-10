@@ -54,4 +54,31 @@ describe('regression - API auth hardening', () => {
     )
     expect(workerEntry).toContain('EvoLinkAI')
   })
+
+  /**
+   * Regression: /api/auth/register used to collapse all failures into a
+   * single `ApiError('INVALID_PARAMS')` with no details, so the frontend
+   * could not tell "username taken" apart from "missing field". The route
+   * must now emit distinct codes and a details envelope keyed by field.
+   */
+  it('/api/auth/register emits distinct errors per failure class', async () => {
+    const source = await readRoute('auth/register')
+
+    // Username-taken is a 409 CONFLICT, not a 400 INVALID_PARAMS.
+    expect(source).toContain("'CONFLICT'")
+    expect(source).toMatch(/field:\s*['"]name['"]/)
+    expect(source).toMatch(/reason:\s*['"]taken['"]/)
+
+    // Password-too-short carries the field + minLength, so the UI can
+    // localize "at least N characters" without hardcoding.
+    expect(source).toMatch(/reason:\s*['"]tooShort['"]/)
+    expect(source).toMatch(/minLength:\s*6/)
+
+    // Missing-field errors are emitted individually, not collapsed.
+    expect(source).toMatch(/reason:\s*['"]required['"]/)
+
+    // Historical leftover from the fork origin (project was phone-based
+    // before conversion to username auth) must stay gone.
+    expect(source).not.toContain('Phone number already exists')
+  })
 })

@@ -20,30 +20,38 @@ export const POST = apiHandler(async (request: NextRequest) => {
     )
   }
 
-  let name = 'unknown'
   const body = await request.json()
-  name = body.name || 'unknown'
-  const { password } = body
+  const name = typeof body?.name === 'string' ? body.name.trim() : ''
+  const password = typeof body?.password === 'string' ? body.password : ''
 
-  // 验证输入
-  if (!name || !password) {
-    logAuthAction('REGISTER', name, { error: 'Missing credentials' })
-    throw new ApiError('INVALID_PARAMS')
+  // ── 入参校验：按字段逐一返回具体错误 ───────────────────────────
+  if (!name) {
+    logAuthAction('REGISTER', 'unknown', { error: 'Missing username' })
+    throw new ApiError('INVALID_PARAMS', { field: 'name', reason: 'required' })
+  }
+
+  if (!password) {
+    logAuthAction('REGISTER', name, { error: 'Missing password' })
+    throw new ApiError('INVALID_PARAMS', { field: 'password', reason: 'required' })
   }
 
   if (password.length < 6) {
     logAuthAction('REGISTER', name, { error: 'Password too short' })
-    throw new ApiError('INVALID_PARAMS')
+    throw new ApiError('INVALID_PARAMS', {
+      field: 'password',
+      reason: 'tooShort',
+      minLength: 6,
+    })
   }
 
-  // 检查用户是否已存在
+  // ── 用户已存在 → 409 CONFLICT（与 400 入参错误语义隔离）───────
   const existingUser = await prisma.user.findUnique({
-    where: { name }
+    where: { name },
   })
 
   if (existingUser) {
-    logAuthAction('REGISTER', name, { error: 'Phone number already exists' })
-    throw new ApiError('INVALID_PARAMS')
+    logAuthAction('REGISTER', name, { error: 'Username already taken' })
+    throw new ApiError('CONFLICT', { field: 'name', reason: 'taken' })
   }
 
   // 哈希密码

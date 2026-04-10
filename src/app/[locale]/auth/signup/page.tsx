@@ -1,11 +1,48 @@
 'use client'
 
 import { useState } from "react"
+import { signIn } from "next-auth/react"
+import { useTranslations } from 'next-intl'
 import PasswordStrengthIndicator from "@/components/auth/PasswordStrengthIndicator"
 import { apiFetch } from '@/lib/api-fetch'
 import { Link, useRouter } from '@/i18n/navigation'
+import { buildAuthenticatedHomeTarget } from '@/lib/home/default-route'
+
+/**
+ * Map a backend registration error response to a user-facing i18n key.
+ * The backend emits one of:
+ *   - INVALID_PARAMS + { field: 'name',     reason: 'required' }
+ *   - INVALID_PARAMS + { field: 'password', reason: 'required' }
+ *   - INVALID_PARAMS + { field: 'password', reason: 'tooShort', minLength: 6 }
+ *   - CONFLICT       + { field: 'name',     reason: 'taken'    }
+ *   - 429 rate-limited                      (no ApiError, custom shape)
+ */
+function resolveSignupErrorKey(data: Record<string, unknown>): {
+  key: string
+  values?: Record<string, string | number>
+} {
+  const code = typeof data?.code === 'string' ? data.code : ''
+  const field = typeof data?.field === 'string' ? data.field : ''
+  const reason = typeof data?.reason === 'string' ? data.reason : ''
+  const minLength = typeof data?.minLength === 'number' ? data.minLength : 6
+
+  if (code === 'CONFLICT' && field === 'name' && reason === 'taken') {
+    return { key: 'errors.usernameTaken' }
+  }
+  if (code === 'INVALID_PARAMS' && field === 'name' && reason === 'required') {
+    return { key: 'errors.usernameRequired' }
+  }
+  if (code === 'INVALID_PARAMS' && field === 'password' && reason === 'required') {
+    return { key: 'errors.passwordRequired' }
+  }
+  if (code === 'INVALID_PARAMS' && field === 'password' && reason === 'tooShort') {
+    return { key: 'errors.passwordTooShort', values: { minLength } }
+  }
+  return { key: 'errors.signupGeneric' }
+}
 
 export default function SignUp() {
+  const t = useTranslations('auth')
   const [name, setName] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -20,14 +57,15 @@ export default function SignUp() {
     setError("")
     setSuccess("")
 
+    // ── Client-side guards (mirror server rules) ───────────────────
     if (password !== confirmPassword) {
-      setError("Passwords do not match.")
+      setError(t('errors.passwordMismatch'))
       setLoading(false)
       return
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters.")
+      setError(t('errors.passwordTooShort', { minLength: 6 }))
       setLoading(false)
       return
     }
@@ -35,28 +73,45 @@ export default function SignUp() {
     try {
       const response = await apiFetch("/api/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, password }),
       })
 
       const data = await response.json()
 
-      if (response.ok) {
-        setSuccess("Account created! Redirecting to sign in...")
+      if (!response.ok) {
+        // 429 rate-limited has its own shape (no ApiError code)
+        if (response.status === 429) {
+          setError(t('errors.rateLimited'))
+        } else {
+          const { key, values } = resolveSignupErrorKey(data)
+          setError(t(key, values))
+        }
+        setLoading(false)
+        return
+      }
+
+      // ── Auto sign-in on success so the user doesn't have to retype ──
+      setSuccess(t('signup.successAutoSignin'))
+      const signInResult = await signIn('credentials', {
+        username: name,
+        password,
+        redirect: false,
+      })
+
+      if (signInResult?.error) {
+        // Account exists but auto-login failed — send user to sign-in page
+        setSuccess(t('signup.successFallback'))
         setTimeout(() => {
           router.push({ pathname: '/auth/signin' })
-        }, 2000)
-      } else {
-        setError(data.message || "Registration failed. Please try again.")
+        }, 1200)
+        return
       }
+
+      router.push(buildAuthenticatedHomeTarget())
+      router.refresh()
     } catch {
-      setError("An error occurred. Please try again.")
-    } finally {
+      setError(t('errors.network'))
       setLoading(false)
     }
   }
@@ -73,10 +128,10 @@ export default function SignUp() {
           </div>
 
           <h1 className="text-2xl font-semibold text-[#171717]">
-            Create an account
+            {t('signup.title')}
           </h1>
           <p className="mt-2 text-[#737373]">
-            Start creating amazing videos
+            {t('signup.subtitle')}
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
@@ -85,7 +140,7 @@ export default function SignUp() {
                 htmlFor="name"
                 className="block text-sm font-medium text-[#737373] mb-1.5"
               >
-                Username
+                {t('signup.usernameLabel')}
               </label>
               <input
                 id="name"
@@ -96,7 +151,7 @@ export default function SignUp() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-[#e5e5e5] rounded-md bg-white text-[#171717] placeholder:text-[#a3a3a3] focus:border-black focus:ring-2 focus:ring-black/5 outline-none transition"
-                placeholder="Choose a username"
+                placeholder={t('signup.usernamePlaceholder')}
               />
             </div>
 
@@ -105,7 +160,7 @@ export default function SignUp() {
                 htmlFor="password"
                 className="block text-sm font-medium text-[#737373] mb-1.5"
               >
-                Password
+                {t('signup.passwordLabel')}
               </label>
               <input
                 id="password"
@@ -116,7 +171,7 @@ export default function SignUp() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-[#e5e5e5] rounded-md bg-white text-[#171717] placeholder:text-[#a3a3a3] focus:border-black focus:ring-2 focus:ring-black/5 outline-none transition"
-                placeholder="At least 6 characters"
+                placeholder={t('signup.passwordPlaceholder')}
               />
               <PasswordStrengthIndicator password={password} />
             </div>
@@ -126,7 +181,7 @@ export default function SignUp() {
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-[#737373] mb-1.5"
               >
-                Confirm Password
+                {t('signup.confirmPasswordLabel')}
               </label>
               <input
                 id="confirmPassword"
@@ -137,7 +192,7 @@ export default function SignUp() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-[#e5e5e5] rounded-md bg-white text-[#171717] placeholder:text-[#a3a3a3] focus:border-black focus:ring-2 focus:ring-black/5 outline-none transition"
-                placeholder="Re-enter your password"
+                placeholder={t('signup.confirmPasswordPlaceholder')}
               />
             </div>
 
@@ -158,17 +213,17 @@ export default function SignUp() {
               disabled={loading}
               className="w-full py-3 bg-black text-white rounded-md font-medium hover:bg-[#262626] transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Creating account..." : "Create Account"}
+              {loading ? t('signup.submitLoading') : t('signup.submit')}
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-[#737373]">
-            Already have an account?{" "}
+            {t('signup.hasAccount')}{" "}
             <Link
               href={{ pathname: '/auth/signin' }}
               className="text-black font-medium hover:underline"
             >
-              Sign in
+              {t('signup.signinLink')}
             </Link>
           </p>
         </div>
@@ -177,14 +232,11 @@ export default function SignUp() {
       {/* Right — Brand panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#1a1a1a] items-center justify-center rounded-l-3xl relative overflow-hidden">
         <div className="relative z-10 max-w-md px-12 text-center">
-          <h2 className="text-4xl font-mono font-semibold text-white leading-tight">
-            Transform Stories
-            <br />
-            Into Videos
+          <h2 className="text-4xl font-mono font-semibold text-white leading-tight whitespace-pre-line">
+            {t('brand.headline')}
           </h2>
           <p className="mt-4 text-gray-400 text-lg">
-            AI-powered novel-to-video production platform.
-            Turn your imagination into cinematic reality.
+            {t('brand.description')}
           </p>
         </div>
 
