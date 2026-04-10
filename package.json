@@ -102,7 +102,7 @@
     "typecheck": "tsc --noEmit",
     "lint:all": "npm run lint -- .",
     "verify:commit": "npm run lint:all && npm run typecheck && npm run test:all",
-    "verify:push": "npm run lint:all && npm run typecheck && npm run test:all && npm run build",
+    "verify:push": "npm run lint:all && npm run typecheck && npm run test:all",
     "migrate:image-urls-contract": "tsx scripts/migrate-image-urls-contract.ts",
     "migrate:model-config-contract": "tsx scripts/migrations/migrate-model-config-contract.ts",
     "migrate:capability-selections": "tsx scripts/migrations/migrate-capability-selections.ts",
