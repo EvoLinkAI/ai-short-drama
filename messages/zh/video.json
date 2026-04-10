@@ -91,7 +91,13 @@
     "downloadAll": "下载全部",
     "enterEditor": "进入视频剪辑器",
     "enterEdit": "进入剪辑",
-    "back": "返回"
+    "back": "返回",
+    "mergeVideos": "导出完整视频",
+    "mergeVideosHint": "将所有镜头片段拼接为一个完整视频（非AI剪辑）",
+    "merging": "拼接中...",
+    "mergeComplete": "拼接完成 — 点击下载",
+    "mergeFailed": "拼接失败",
+    "mergeDisclaimer": "仅做简单拼接，无AI剪辑、调色或转场处理。分辨率将统一为第一个片段的尺寸，不同宽高比的片段可能出现黑边。"
   },
   "stage": {
     "title": "视频合成",

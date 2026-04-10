@@ -100,6 +100,7 @@ const ROUTE_FILES = [
   'src/app/api/studio/[projectId]/generate-image/route.ts',
   'src/app/api/studio/[projectId]/generate-video/route.ts',
   'src/app/api/studio/[projectId]/insert-panel/route.ts',
+  'src/app/api/studio/[projectId]/merge-episode-videos/route.ts',
   'src/app/api/studio/[projectId]/lip-sync/route.ts',
   'src/app/api/studio/[projectId]/location/confirm-selection/route.ts',
   'src/app/api/studio/[projectId]/location/route.ts',

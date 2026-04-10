@@ -35,6 +35,7 @@ import { useVideoPromptState } from './video-stage-runtime/useVideoPromptState'
 import { useVideoPanelLinking } from './video-stage-runtime/useVideoPanelLinking'
 import { useVideoVoiceLines } from './video-stage-runtime/useVideoVoiceLines'
 import { useVideoDownloadAll } from './video-stage-runtime/useVideoDownloadAll'
+import { useMergeVideos } from './video-stage-runtime/useMergeVideos'
 import { useVideoStageUiState } from './video-stage-runtime/useVideoStageUiState'
 import { useVideoPanelViewport } from './video-stage-runtime/useVideoPanelViewport'
 import { useVideoFirstLastFrameFlow } from './video-stage-runtime/useVideoFirstLastFrameFlow'
@@ -152,6 +153,12 @@ export function useVideoStageRuntime({
     listEpisodeVideoUrlsMutation,
     downloadRemoteBlobMutation,
   })
+
+  const {
+    mergeState,
+    mergeResult,
+    handleMergeVideos,
+  } = useMergeVideos({ projectId, episodeId })
 
   const allVideoModelOptions = useMemo(
     () => userVideoModels || [],
@@ -521,6 +528,9 @@ export function useVideoStageRuntime({
         onBack={onBack}
         onEnterEditor={onEnterEditor}
         videosReady={videosWithUrl > 0}
+        mergeState={mergeState}
+        mergeVideoUrl={mergeResult?.mergedVideoUrl ?? null}
+        onMergeVideos={handleMergeVideos}
       />
 
       <VideoTimelinePanel

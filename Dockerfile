@@ -30,8 +30,8 @@ LABEL org.opencontainers.image.title="aidrama-studio" \
 
 ENV NODE_ENV=production
 
-# Install tini for proper signal handling
-RUN apk add --no-cache tini
+# Install tini for proper signal handling, ffmpeg for video merging
+RUN apk add --no-cache tini ffmpeg
 
 # Runtime dependencies — includes devDeps since npm run start requires concurrently + tsx
 COPY --from=build /app/package.json ./package.json

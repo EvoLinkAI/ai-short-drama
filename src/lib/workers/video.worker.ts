@@ -18,6 +18,7 @@ import { normalizeToBase64ForGeneration } from '@/lib/media/outbound-image'
 import { resolveBuiltinCapabilitiesByModelKey } from '@/lib/model-capabilities/lookup'
 import { parseModelKeyStrict } from '@/lib/model-config-contract'
 import { getProviderConfig } from '@/lib/api-config'
+import { handleMergeEpisodeVideosTask } from './handlers/merge-videos'
 
 type AnyObj = Record<string, unknown>
 type VideoOptionValue = string | number | boolean
@@ -291,15 +292,33 @@ async function processVideoTask(job: Job<TaskJobData>) {
       return await handleVideoPanelTask(job)
     case TASK_TYPE.LIP_SYNC:
       return await handleLipSyncTask(job)
+    case TASK_TYPE.MERGE_EPISODE_VIDEOS:
+      return await handleMergeEpisodeVideosTask(job)
     default:
       throw new Error(`Unsupported video task type: ${job.data.type}`)
   }
 }
 
+// MERGE is CPU-bound and free (non-billable). A dedicated per-user scope
+// prevents a single user from saturating the video gate with merge tasks and
+// starving their own (or other users') billable video_panel / lip_sync work.
+const MERGE_PER_USER_LIMIT = Math.max(
+  1,
+  Number.parseInt(process.env.MERGE_VIDEOS_PER_USER_LIMIT || '1', 10) || 1,
+)
+
 export function createVideoWorker() {
   return new Worker<TaskJobData>(
     QUEUE_NAME.VIDEO,
     async (job) => await withTaskLifecycle(job, async (taskJob) => {
+      if (taskJob.data.type === TASK_TYPE.MERGE_EPISODE_VIDEOS) {
+        return await withUserConcurrencyGate({
+          scope: 'merge',
+          userId: taskJob.data.userId,
+          limit: MERGE_PER_USER_LIMIT,
+          run: async () => await processVideoTask(taskJob),
+        })
+      }
       const workflowConcurrency = await getUserWorkflowConcurrencyConfig(taskJob.data.userId)
       return await withUserConcurrencyGate({
         scope: 'video',

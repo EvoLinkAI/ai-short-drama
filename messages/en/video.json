@@ -91,7 +91,13 @@
     "downloadAll": "Download All",
     "enterEditor": "Open Video Editor",
     "enterEdit": "Enter Editor",
-    "back": "Back"
+    "back": "Back",
+    "mergeVideos": "Export Full Video",
+    "mergeVideosHint": "Concatenates all shot clips into one video (no AI editing)",
+    "merging": "Merging...",
+    "mergeComplete": "Merge complete — click to download",
+    "mergeFailed": "Merge failed",
+    "mergeDisclaimer": "Simple concatenation only — no AI editing, color grading, or transitions. Resolution will be normalized to the first clip. Different aspect ratios may result in black bars."
   },
   "stage": {
     "title": "Video Synthesis",

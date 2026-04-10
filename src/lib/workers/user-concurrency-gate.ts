@@ -1,4 +1,4 @@
-type ConcurrencyScope = 'image' | 'video'
+type ConcurrencyScope = 'image' | 'video' | 'merge'
 
 interface GateState {
   active: number

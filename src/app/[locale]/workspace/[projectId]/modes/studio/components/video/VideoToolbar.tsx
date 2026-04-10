@@ -4,6 +4,8 @@ import TaskStatusInline from '@/components/task/TaskStatusInline'
 import { resolveTaskPresentationState } from '@/lib/task/presentation'
 import { AppIcon } from '@/components/ui/icons'
 
+type MergeState = 'idle' | 'submitting' | 'merging' | 'done' | 'error'
+
 interface VideoToolbarProps {
   totalPanels: number
   runningCount: number
@@ -14,8 +16,11 @@ interface VideoToolbarProps {
   onGenerateAll: () => void
   onDownloadAll: () => void
   onBack: () => void
-  onEnterEditor?: () => void  // 进入剪辑器
-  videosReady?: boolean  // 是否有视频可以剪辑
+  onEnterEditor?: () => void
+  videosReady?: boolean
+  mergeState?: MergeState
+  mergeVideoUrl?: string | null
+  onMergeVideos?: () => void
 }
 
 export default function VideoToolbar({
@@ -29,7 +34,10 @@ export default function VideoToolbar({
   onDownloadAll,
   onBack,
   onEnterEditor,
-  videosReady = false
+  videosReady = false,
+  mergeState = 'idle',
+  mergeVideoUrl,
+  onMergeVideos,
 }: VideoToolbarProps) {
   const t = useTranslations('video')
   const videoTaskRunningState = isAnyTaskRunning
@@ -98,6 +106,41 @@ export default function VideoToolbar({
               </>
             )}
           </button>
+          {onMergeVideos && (
+            <div className="relative group">
+              {mergeState === 'done' && mergeVideoUrl ? (
+                <a
+                  href={mergeVideoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="glass-btn-base glass-btn-tone-success flex items-center gap-2 px-4 py-2 text-sm font-medium"
+                >
+                  <AppIcon name="image" className="w-4 h-4" />
+                  <span>{t('toolbar.mergeComplete')}</span>
+                </a>
+              ) : (
+                <button
+                  onClick={onMergeVideos}
+                  disabled={videosWithUrl < 2 || mergeState === 'submitting' || mergeState === 'merging'}
+                  className="glass-btn-base glass-btn-tone-info flex items-center gap-2 px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={t('toolbar.mergeVideosHint')}
+                >
+                  <AppIcon name="wandOff" className="w-4 h-4" />
+                  <span>
+                    {mergeState === 'submitting' || mergeState === 'merging'
+                      ? t('toolbar.merging')
+                      : mergeState === 'error'
+                        ? t('toolbar.mergeFailed')
+                        : t('toolbar.mergeVideos')}
+                  </span>
+                </button>
+              )}
+              <div className="absolute top-full right-0 mt-1 w-64 p-2 rounded-lg bg-[var(--glass-surface-overlay)] border border-[var(--glass-stroke-base)] text-xs text-[var(--glass-text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                {t('toolbar.mergeDisclaimer')}
+              </div>
+            </div>
+          )}
           {onEnterEditor && (
             <button
               onClick={onEnterEditor}
