@@ -1,10 +1,78 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import Navbar from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { Link } from '@/i18n/navigation'
+
+// Showcase videos are full-quality H.264 (~5MB each × 8). A naive approach
+// loads all of them on page mount, which is visibly slow. Strategy:
+//   1. Every video gets a high-resolution JPEG poster (~80-150KB) rendered
+//      instantly, so the carousel never flashes black.
+//   2. `preload="none"` stops the browser from fetching video bytes until
+//      we explicitly set `src`.
+//   3. Every video is observed by an IntersectionObserver. Videos already in
+//      the viewport on mount fire immediately (first paint). Videos off-screen
+//      fire as soon as they come within 400px of the viewport, so by the time
+//      the scroll carousel brings them on-screen, bytes are in flight.
+//   4. This adapts to any screen width: a 2560px monitor showing 7+ tiles
+//      will eagerly load exactly those 7 without any hard-coded eager count.
+
+function LazyVideo({
+  src,
+  poster,
+}: {
+  src: string
+  poster: string
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [shouldLoad, setShouldLoad] = useState(false)
+
+  useEffect(() => {
+    if (shouldLoad) return
+    const el = videoRef.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setShouldLoad(true)
+            io.disconnect()
+            break
+          }
+        }
+      },
+      { rootMargin: '400px' },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [shouldLoad])
+
+  useEffect(() => {
+    if (!shouldLoad) return
+    const el = videoRef.current
+    if (!el) return
+    // Autoplay attribute is unreliable after a late `src` assignment;
+    // kick playback manually and swallow interruption errors.
+    el.play().catch(() => {})
+  }, [shouldLoad])
+
+  return (
+    <video
+      ref={videoRef}
+      src={shouldLoad ? src : undefined}
+      poster={poster}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="none"
+      className="w-full aspect-[9/16] object-cover"
+    />
+  )
+}
 
 export default function Home() {
   const { data: session } = useSession()
@@ -66,13 +134,9 @@ export default function Home() {
                   key={`${setIdx}-${i}`}
                   className="flex-shrink-0 w-[280px] rounded-xl overflow-hidden bg-black"
                 >
-                  <video
+                  <LazyVideo
                     src={`/videos/showcase/${name}.mp4`}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full aspect-[9/16] object-cover"
+                    poster={`/videos/showcase/posters/${name}.jpg`}
                   />
                 </div>
               ))
