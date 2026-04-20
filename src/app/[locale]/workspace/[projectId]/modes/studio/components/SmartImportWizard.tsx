@@ -8,6 +8,7 @@ import StepParse from './smart-import/steps/StepParse'
 import StepMapping from './smart-import/steps/StepMapping'
 import StepConfirm from './smart-import/steps/StepConfirm'
 import type { SplitEpisode } from './smart-import/types'
+import { trackEvent } from '@/lib/analytics'
 
 export type { SplitEpisode } from './smart-import/types'
 
@@ -71,8 +72,8 @@ export default function SmartImportWizard({
         saving={wizard.saving}
         savingTaskState={savingTaskState}
         onReanalyze={() => wizard.setStage('select')}
-        onConfirm={() => { void wizard.handleConfirm() }}
-        onConfirmWithGlobalAnalysis={() => { void wizard.handleConfirm(true) }}
+        onConfirm={() => { trackEvent('smart_import'); void wizard.handleConfirm() }}
+        onConfirmWithGlobalAnalysis={() => { trackEvent('smart_import'); void wizard.handleConfirm(true) }}
       />
 
       <StepMapping

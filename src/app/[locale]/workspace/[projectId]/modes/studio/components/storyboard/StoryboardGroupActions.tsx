@@ -6,6 +6,7 @@ import { resolveTaskPresentationState } from '@/lib/task/presentation'
 import TaskStatusInline from '@/components/task/TaskStatusInline'
 import { GlassButton } from '@/components/ui/primitives'
 import { AppIcon } from '@/components/ui/icons'
+import { trackEvent } from '@/lib/analytics'
 
 interface StoryboardGroupActionsProps {
   hasAnyImage: boolean
@@ -74,7 +75,7 @@ export default function StoryboardGroupActions({
         <GlassButton
           variant="primary"
           size="sm"
-          onClick={onGenerateAllIndividually}
+          onClick={() => { trackEvent('image_generate'); onGenerateAllIndividually() }}
           disabled={currentRunningCount > 0}
           title={t('group.generateMissingImages')}
         >

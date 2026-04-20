@@ -1,5 +1,6 @@
 'use client'
 import { logError as _ulogError } from '@/lib/logging/core'
+import { trackEvent } from '@/lib/analytics'
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
@@ -172,7 +173,7 @@ export default function WorkspacePage() {
           _ulogError('获取用户偏好失败:', { status: preferenceResponse.status })
         }
 
-        // 创建成功后刷新第一页
+        trackEvent('project_create')
         setSearchQuery('')
         setSearchInput('')
         setPagination(prev => ({ ...prev, page: 1 }))

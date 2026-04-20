@@ -3,6 +3,9 @@ import { useTranslations } from 'next-intl'
 import TaskStatusInline from '@/components/task/TaskStatusInline'
 import { resolveTaskPresentationState } from '@/lib/task/presentation'
 import { AppIcon } from '@/components/ui/icons'
+import { trackEvent } from '@/lib/analytics'
+
+type MergeState = 'idle' | 'submitting' | 'merging' | 'done' | 'error'
 
 type MergeState = 'idle' | 'submitting' | 'merging' | 'done' | 'error'
 
@@ -78,7 +81,7 @@ export default function VideoToolbar({
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={onGenerateAll}
+            onClick={() => { trackEvent('video_generate'); onGenerateAll() }}
             disabled={isAnyTaskRunning}
             className="glass-btn-base glass-btn-primary flex items-center gap-2 px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -92,7 +95,7 @@ export default function VideoToolbar({
             )}
           </button>
           <button
-            onClick={onDownloadAll}
+            onClick={() => { trackEvent('video_download'); onDownloadAll() }}
             disabled={videosWithUrl === 0 || isDownloading}
             className="glass-btn-base glass-btn-tone-info flex items-center gap-2 px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             title={videosWithUrl === 0 ? t('toolbar.noVideos') : t('toolbar.downloadCount', { count: videosWithUrl })}

@@ -4,7 +4,9 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./src/i18n.ts');
 
 const nextConfig: NextConfig = {
-  // Strict build — no ignoreBuildErrors / ignoreDuringBuilds
+  env: {
+    NEXT_PUBLIC_GA4_ID: process.env.NEXT_PUBLIC_GA4_ID || 'G-ZTKPLQTLJH',
+  },
   async headers() {
     return [
       {

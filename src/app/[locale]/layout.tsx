@@ -7,6 +7,9 @@ import { notFound } from 'next/navigation';
 import "../globals.css";
 import { Providers } from "./providers";
 import { locales } from '@/i18n/routing';
+import RouteTracker from '@/components/analytics/RouteTracker';
+
+const GA_ID = process.env.NEXT_PUBLIC_GA4_ID || '';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -85,12 +88,23 @@ export default async function LocaleLayout({
             <body
                 className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
             >
+                {GA_ID && (
+                    <>
+                        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+                        <Script id="ga4-init" strategy="afterInteractive">{`
+                            window.dataLayer=window.dataLayer||[];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js',new Date());
+                            gtag('config','${GA_ID}');
+                        `}</Script>
+                    </>
+                )}
                 <NextIntlClientProvider messages={messages}>
                     <Providers>
                         {children}
                     </Providers>
                 </NextIntlClientProvider>
-
+                {GA_ID && <RouteTracker />}
             </body>
         </html>
     );

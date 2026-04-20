@@ -5,6 +5,7 @@ import VoiceDesignDialogBase, {
   type VoiceDesignMutationResult,
 } from '@/components/voice/VoiceDesignDialogBase'
 import { useDesignAssetHubVoice } from '@/lib/query/hooks'
+import { trackEvent } from '@/lib/analytics'
 
 interface VoiceDesignDialogProps {
   isOpen: boolean
@@ -26,6 +27,7 @@ export default function VoiceDesignDialog({
   const handleDesignVoice = async (
     payload: VoiceDesignMutationPayload,
   ): Promise<VoiceDesignMutationResult> => {
+    trackEvent('voice_design')
     return await designVoiceMutation.mutateAsync(payload)
   }
 

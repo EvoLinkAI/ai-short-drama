@@ -12,6 +12,7 @@ import { ART_STYLES, VIDEO_RATIOS } from '@/lib/constants'
 import TaskStatusInline from '@/components/task/TaskStatusInline'
 import { resolveTaskPresentationState } from '@/lib/task/presentation'
 import { AppIcon } from '@/components/ui/icons'
+import { trackEvent } from '@/lib/analytics'
 import { RatioSelector, StyleSelector } from '@/components/selectors/RatioStyleSelectors'
 
 /** 触发智能分集建议的字数阈值 */
@@ -98,6 +99,7 @@ export default function NovelInputStage({
 
   /** 点击"开始创作"时，先检测文本长度 */
   const handleStartClick = useCallback(() => {
+    trackEvent('novel_import')
     const textLength = localText.trim().length
     if (textLength > LONG_TEXT_THRESHOLD && onSmartSplit) {
       setShowLongTextPrompt(true)

@@ -2,6 +2,7 @@
 import { useTranslations } from 'next-intl'
 import TaskStatusInline from '@/components/task/TaskStatusInline'
 import { resolveTaskPresentationState } from '@/lib/task/presentation'
+import { trackEvent } from '@/lib/analytics'
 
 interface VoiceToolbarProps {
     onBack?: () => void
@@ -76,7 +77,7 @@ export default function VoiceToolbar({
                         {t("toolbar.addLine")}
                     </button>
                     <button
-                        onClick={onGenerateAll}
+                        onClick={() => { trackEvent('voice_generate_all'); onGenerateAll() }}
                         disabled={isBatchSubmitting || !allSpeakersHaveVoice || totalLines === 0}
                         className="glass-btn-base glass-btn-tone-success flex items-center gap-2 px-5 py-2.5 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                         title={!allSpeakersHaveVoice ? t("toolbar.uploadReferenceHint") : ''}
