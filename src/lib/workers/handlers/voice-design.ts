@@ -105,6 +105,19 @@ export async function handleVoiceDesignTask(job: Job<TaskJobData>) {
     throw new Error(designed.error || '声音设计失败')
   }
 
+  // EvoLink returns audioUrl (download link) instead of inline audioBase64.
+  // The frontend contract expects audioBase64 for playback and persistence,
+  // so download the preview audio here (server-side, no CORS issues) and
+  // convert to base64 to keep the mutation return type unchanged.
+  let audioBase64 = designed.audioBase64
+  if (!audioBase64 && designed.audioUrl) {
+    const audioRes = await fetch(designed.audioUrl)
+    if (audioRes.ok) {
+      const buf = Buffer.from(await audioRes.arrayBuffer())
+      audioBase64 = buf.toString('base64')
+    }
+  }
+
   await reportTaskProgress(job, 96, {
     stage: 'voice_design_done',
     stageLabel: '声音设计完成',
@@ -115,7 +128,7 @@ export async function handleVoiceDesignTask(job: Job<TaskJobData>) {
     success: true,
     voiceId: designed.voiceId,
     targetModel: designed.targetModel,
-    audioBase64: designed.audioBase64,
+    audioBase64,
     audioUrl: designed.audioUrl,
     sampleRate: designed.sampleRate,
     responseFormat: designed.responseFormat,
