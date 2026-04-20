@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react"
 import { useTranslations } from 'next-intl'
 import { Link, useRouter } from '@/i18n/navigation'
 import { buildAuthenticatedHomeTarget } from '@/lib/home/default-route'
+import { trackEvent } from '@/lib/analytics'
 
 export default function SignIn() {
   const t = useTranslations('auth')
@@ -35,6 +36,7 @@ export default function SignIn() {
         // input format was invalid — only that the credentials did not match.
         setError(t('errors.loginIncorrect'))
       } else {
+        trackEvent('login')
         router.push(buildAuthenticatedHomeTarget())
         router.refresh()
       }

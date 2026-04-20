@@ -7,16 +7,8 @@ import PasswordStrengthIndicator from "@/components/auth/PasswordStrengthIndicat
 import { apiFetch } from '@/lib/api-fetch'
 import { Link, useRouter } from '@/i18n/navigation'
 import { buildAuthenticatedHomeTarget } from '@/lib/home/default-route'
+import { trackEvent } from '@/lib/analytics'
 
-/**
- * Map a backend registration error response to a user-facing i18n key.
- * The backend emits one of:
- *   - INVALID_PARAMS + { field: 'name',     reason: 'required' }
- *   - INVALID_PARAMS + { field: 'password', reason: 'required' }
- *   - INVALID_PARAMS + { field: 'password', reason: 'tooShort', minLength: 6 }
- *   - CONFLICT       + { field: 'name',     reason: 'taken'    }
- *   - 429 rate-limited                      (no ApiError, custom shape)
- */
 function resolveSignupErrorKey(data: Record<string, unknown>): {
   key: string
   values?: Record<string, string | number>
@@ -80,7 +72,6 @@ export default function SignUp() {
       const data = await response.json()
 
       if (!response.ok) {
-        // 429 rate-limited has its own shape (no ApiError code)
         if (response.status === 429) {
           setError(t('errors.rateLimited'))
         } else {
@@ -91,7 +82,7 @@ export default function SignUp() {
         return
       }
 
-      // ── Auto sign-in on success so the user doesn't have to retype ──
+      trackEvent('sign_up')
       setSuccess(t('signup.successAutoSignin'))
       const signInResult = await signIn('credentials', {
         username: name,
@@ -100,7 +91,6 @@ export default function SignUp() {
       })
 
       if (signInResult?.error) {
-        // Account exists but auto-login failed — send user to sign-in page
         setSuccess(t('signup.successFallback'))
         setTimeout(() => {
           router.push({ pathname: '/auth/signin' })
