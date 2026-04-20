@@ -1,11 +1,16 @@
 'use client'
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslations } from 'next-intl'
 import { useProjectAssets, useProjectData } from '@/lib/query/hooks'
 import { AppIcon } from '@/components/ui/icons'
 import JSZip from 'jszip'
 import { logError as _logError } from '@/lib/logging/core'
+
+// ─── 下拉浮层定位常量 ───────────────────────────────
+const EPISODE_MENU_MAX_HEIGHT = 320
+const EPISODE_MENU_MIN_WIDTH = 180
+const VIEWPORT_EDGE_GAP = 12
 
 /**
  * AssetToolbar - 资产管理工具栏组件
@@ -49,7 +54,7 @@ function EpisodeChip({
     const [open, setOpen] = useState(false)
     const triggerRef = useRef<HTMLButtonElement>(null)
     const menuRef = useRef<HTMLDivElement>(null)
-    const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null)
+    const [menuStyle, setMenuStyle] = useState<React.CSSProperties>({})
 
     const selectedEpisode = episodes.find((ep) => ep.id === episodeId)
     const label = selectedEpisode ? selectedEpisode.name : t('filterBar.allEpisodes')
@@ -57,15 +62,42 @@ function EpisodeChip({
     const updatePosition = useCallback(() => {
         if (!triggerRef.current) return
         const rect = triggerRef.current.getBoundingClientRect()
-        setMenuPos({
-            top: rect.bottom + 6,
-            left: rect.left,
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight
+        const viewportWidth = window.innerWidth || document.documentElement.clientWidth
+
+        // 上下空间检测 + 自动翻转
+        const spaceAbove = Math.max(0, rect.top - VIEWPORT_EDGE_GAP)
+        const spaceBelow = Math.max(0, viewportHeight - rect.bottom - VIEWPORT_EDGE_GAP)
+        const shouldOpenUpward =
+            spaceBelow < EPISODE_MENU_MAX_HEIGHT && spaceAbove > spaceBelow
+        const availableSpace = shouldOpenUpward ? spaceAbove : spaceBelow
+        const clampedMaxHeight = Math.max(
+            140,
+            Math.min(EPISODE_MENU_MAX_HEIGHT, Math.floor(availableSpace)),
+        )
+
+        // 宽度 + 左右夹紧（避免小屏右溢出）
+        const maxAllowedWidth = Math.max(200, viewportWidth - VIEWPORT_EDGE_GAP * 2)
+        const panelWidth = Math.min(
+            maxAllowedWidth,
+            Math.max(EPISODE_MENU_MIN_WIDTH, rect.width),
+        )
+        const maxLeft = viewportWidth - panelWidth - VIEWPORT_EDGE_GAP
+        const panelLeft = Math.max(VIEWPORT_EDGE_GAP, Math.min(rect.left, maxLeft))
+
+        setMenuStyle({
+            position: 'fixed' as const,
+            left: `${panelLeft}px`,
+            width: `${panelWidth}px`,
+            maxHeight: `${clampedMaxHeight}px`,
+            ...(shouldOpenUpward
+                ? { bottom: `${viewportHeight - rect.top + 6}px` }
+                : { top: `${rect.bottom + 6}px` }),
         })
     }, [])
 
     useEffect(() => {
         if (!open) return
-        updatePosition()
         const handleClickOutside = (e: MouseEvent) => {
             if (
                 triggerRef.current?.contains(e.target as Node) ||
@@ -75,6 +107,17 @@ function EpisodeChip({
         }
         document.addEventListener('mousedown', handleClickOutside)
         return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [open])
+
+    useLayoutEffect(() => {
+        if (!open) return
+        updatePosition()
+        window.addEventListener('resize', updatePosition)
+        window.addEventListener('scroll', updatePosition, true)
+        return () => {
+            window.removeEventListener('resize', updatePosition)
+            window.removeEventListener('scroll', updatePosition, true)
+        }
     }, [open, updatePosition])
 
     const handleSelect = (id: string | null) => {
@@ -110,11 +153,11 @@ function EpisodeChip({
                     />
                 )}
             </button>
-            {open && menuPos && createPortal(
+            {open && createPortal(
                 <div
                     ref={menuRef}
-                    className="fixed z-[9999] min-w-[180px] max-h-[320px] overflow-y-auto py-1.5 rounded-xl bg-white dark:bg-[#2c2c2e] shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] border border-[var(--glass-stroke-base)] animate-in fade-in-0 zoom-in-95 duration-150"
-                    style={{ top: menuPos.top, left: menuPos.left }}
+                    className="z-[9999] overflow-y-auto py-1.5 rounded-xl bg-white dark:bg-[#2c2c2e] shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] border border-[var(--glass-stroke-base)] animate-in fade-in-0 zoom-in-95 duration-150 custom-scrollbar"
+                    style={menuStyle}
                 >
                     {/* All episodes option */}
                     <button
