@@ -403,6 +403,7 @@ model User {
   id            String          @id @default(uuid())
   name          String          @unique(map: "User_name_key")
   email         String?
+  phone         String?
   emailVerified DateTime?
   image         String?
   password      String?

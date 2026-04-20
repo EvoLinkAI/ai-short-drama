@@ -23,6 +23,8 @@ export const POST = apiHandler(async (request: NextRequest) => {
   const body = await request.json()
   const name = typeof body?.name === 'string' ? body.name.trim() : ''
   const password = typeof body?.password === 'string' ? body.password : ''
+  const email = typeof body?.email === 'string' ? body.email.trim() : ''
+  const phone = typeof body?.phone === 'string' ? body.phone.trim() : ''
 
   // ── 入参校验：按字段逐一返回具体错误 ───────────────────────────
   if (!name) {
@@ -63,7 +65,9 @@ export const POST = apiHandler(async (request: NextRequest) => {
     const newUser = await tx.user.create({
       data: {
         name,
-        password: hashedPassword
+        password: hashedPassword,
+        ...(email && { email }),
+        ...(phone && { phone }),
       }
     })
 

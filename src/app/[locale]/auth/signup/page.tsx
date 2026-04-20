@@ -36,6 +36,8 @@ function resolveSignupErrorKey(data: Record<string, unknown>): {
 export default function SignUp() {
   const t = useTranslations('auth')
   const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [loading, setLoading] = useState(false)
@@ -66,7 +68,7 @@ export default function SignUp() {
       const response = await apiFetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, password }),
+        body: JSON.stringify({ name, email, phone, password }),
       })
 
       const data = await response.json()
@@ -142,6 +144,44 @@ export default function SignUp() {
                 required
                 className="w-full px-4 py-3 border border-[#e5e5e5] rounded-md bg-white text-[#171717] placeholder:text-[#a3a3a3] focus:border-black focus:ring-2 focus:ring-black/5 outline-none transition"
                 placeholder={t('signup.usernamePlaceholder')}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-[#737373] mb-1.5"
+              >
+                {t('signup.emailLabel')}
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 border border-[#e5e5e5] rounded-md bg-white text-[#171717] placeholder:text-[#a3a3a3] focus:border-black focus:ring-2 focus:ring-black/5 outline-none transition"
+                placeholder={t('signup.emailPlaceholder')}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-[#737373] mb-1.5"
+              >
+                {t('signup.phoneLabel')}
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-4 py-3 border border-[#e5e5e5] rounded-md bg-white text-[#171717] placeholder:text-[#a3a3a3] focus:border-black focus:ring-2 focus:ring-black/5 outline-none transition"
+                placeholder={t('signup.phonePlaceholder')}
               />
             </div>
 
