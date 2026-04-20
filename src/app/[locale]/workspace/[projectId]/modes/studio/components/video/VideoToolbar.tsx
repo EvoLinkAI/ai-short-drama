@@ -7,8 +7,6 @@ import { trackEvent } from '@/lib/analytics'
 
 type MergeState = 'idle' | 'submitting' | 'merging' | 'done' | 'error'
 
-type MergeState = 'idle' | 'submitting' | 'merging' | 'done' | 'error'
-
 interface VideoToolbarProps {
   totalPanels: number
   runningCount: number
