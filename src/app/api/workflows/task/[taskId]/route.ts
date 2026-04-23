@@ -40,6 +40,14 @@ export const GET = apiHandler(async (
         if (typeof r === 'string') resultUrls.push(r)
       }
     }
+    if (typeof rd.audio_url === 'string') resultUrls.push(rd.audio_url)
+    if (Array.isArray(rd.songs)) {
+      for (const song of rd.songs) {
+        if (song && typeof song === 'object' && typeof (song as Record<string, unknown>).audio_url === 'string') {
+          resultUrls.push((song as Record<string, unknown>).audio_url as string)
+        }
+      }
+    }
   }
   if (resultUrls.length === 0 && Array.isArray(data.results)) {
     for (const r of data.results) {

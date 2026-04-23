@@ -44,6 +44,16 @@ export const POST = apiHandler(async (request: NextRequest) => {
     if (body.duration) payload.duration = Number(body.duration)
     if (body.size) payload.aspect_ratio = body.size
     payload.generate_audio = true
+  } else if (step === 'music') {
+    endpoint = `${EVOLINK_API_BASE}/audios/generations`
+    payload = {
+      model: body.model || 'suno-v5-beta',
+      prompt: body.prompt || '',
+      custom_mode: body.customMode ?? false,
+      instrumental: body.instrumental ?? false,
+    }
+    if (body.style) payload.style = body.style
+    if (body.title) payload.title = body.title
   } else {
     return NextResponse.json({ error: 'Invalid step' }, { status: 400 })
   }
