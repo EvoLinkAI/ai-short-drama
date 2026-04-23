@@ -12,7 +12,6 @@ import { useLocale } from 'next-intl'
 import { useWorkflowRun } from '../hooks/useWorkflowRun'
 import { trackEvent } from '@/lib/analytics'
 
-const STYLE_OPTIONS = ['Anime OP', 'Cinematic', 'Cyberpunk', 'Painterly']
 const RATIO_OPTIONS = ['16:9', '9:16', '1:1']
 const DURATION_OPTIONS = [6, 10, 15]
 
@@ -27,33 +26,33 @@ export default function WorkflowDetailPage() {
   const router = useRouter()
   const t = useTranslations('workflows.detail')
 
-  const [scene, setScene] = useState('')
-  const [character, setCharacter] = useState('')
-  const [style, setStyle] = useState('Anime OP')
+  const [fieldValues, setFieldValues] = useState<Record<string, string>>({})
   const [ratio, setRatio] = useState('16:9')
   const [duration, setDuration] = useState(10)
 
   const resultRef = useRef<HTMLDivElement>(null)
 
+  const updateField = useCallback((key: string, value: string) => {
+    setFieldValues((prev) => ({ ...prev, [key]: value }))
+  }, [])
+
+  const allFieldsFilled = workflow?.fields.every((f) => (fieldValues[f.key] || '').trim()) ?? false
+
   const handleRun = useCallback(() => {
-    if (!workflow || !scene.trim()) return
+    if (!workflow || !allFieldsFilled) return
     if (!session) {
       router.push({ pathname: '/auth/signin' })
       return
     }
     trackEvent('workflow_run')
 
-    const imagePrompt = workflow.prompts[0]?.text
-      .replace('{YOUR_SCENE}', scene)
-      .replace('{YOUR_CHARACTER}', character || 'protagonist')
-      .replace('{YOUR_LOCATION}', scene)
-      .replace('{YOUR_APP_CONCEPT}', scene)
-      .replace('{YOUR_PRODUCT}', scene)
-      .replace('{YOUR_THEME}', scene)
-      .replace('{VISUAL_CONCEPT}', scene)
-      || scene
+    let imagePrompt = workflow.prompts[0]?.text || ''
+    for (const field of workflow.fields) {
+      const val = fieldValues[field.key] || ''
+      imagePrompt = imagePrompt.replaceAll(`{${field.key}}`, val)
+    }
 
-    const videoPrompt = workflow.prompts[1]?.text || `${style} style, cinematic, 24fps`
+    const videoPrompt = workflow.prompts[1]?.text || 'cinematic, 24fps'
 
     wf.run({
       imagePrompt,
@@ -67,7 +66,7 @@ export default function WorkflowDetailPage() {
     })
 
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: 'smooth' }), 300)
-  }, [workflow, scene, character, style, ratio, duration, wf, session, router])
+  }, [workflow, fieldValues, allFieldsFilled, ratio, duration, wf, session, router])
 
   if (!workflow) {
     return (
@@ -188,47 +187,29 @@ export default function WorkflowDetailPage() {
           <aside className="lg:sticky lg:top-20 self-start bg-white border border-[#e5e5e5] rounded-2xl p-5">
             <div className="font-mono text-[11px] text-[#999] tracking-widest mb-4">{t('runPanel')}</div>
 
-            <div className="mb-4">
-              <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">
-                {t('scene')} <span className="font-mono text-[11px] text-[#999] font-normal ml-1">{t('sceneHint')}</span>
-              </label>
-              <textarea
-                value={scene}
-                onChange={(e) => setScene(e.target.value)}
-                placeholder={t('scenePlaceholder')}
-                className="w-full border border-[#d4d4d4] rounded-lg px-3 py-2.5 text-[13px] min-h-[84px] resize-y focus:outline-none focus:border-[#0a0a0a] transition"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">
-                {t('character')} <span className="font-mono text-[11px] text-[#999] font-normal ml-1">{t('characterHint')}</span>
-              </label>
-              <input
-                type="text"
-                value={character}
-                onChange={(e) => setCharacter(e.target.value)}
-                placeholder={t('characterPlaceholder')}
-                className="w-full border border-[#d4d4d4] rounded-lg px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#0a0a0a] transition"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">{t('style')}</label>
-              <div className="flex flex-wrap gap-1.5">
-                {STYLE_OPTIONS.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setStyle(s)}
-                    className={`px-3 py-1.5 rounded-full text-[12px] border transition ${
-                      style === s ? 'border-[#0a0a0a] text-[#0a0a0a]' : 'border-[#e5e5e5] text-[#555]'
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
+            {workflow.fields.map((field) => (
+              <div key={field.key} className="mb-4">
+                <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">
+                  {locale === 'zh' ? field.labelZh : field.label}
+                </label>
+                {field.type === 'textarea' ? (
+                  <textarea
+                    value={fieldValues[field.key] || ''}
+                    onChange={(e) => updateField(field.key, e.target.value)}
+                    placeholder={locale === 'zh' ? field.placeholderZh : field.placeholder}
+                    className="w-full border border-[#d4d4d4] rounded-lg px-3 py-2.5 text-[13px] min-h-[84px] resize-y focus:outline-none focus:border-[#0a0a0a] transition"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={fieldValues[field.key] || ''}
+                    onChange={(e) => updateField(field.key, e.target.value)}
+                    placeholder={locale === 'zh' ? field.placeholderZh : field.placeholder}
+                    className="w-full border border-[#d4d4d4] rounded-lg px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#0a0a0a] transition"
+                  />
+                )}
               </div>
-            </div>
+            ))}
 
             <div className="mb-4">
               <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">{t('ratio')}</label>
@@ -266,7 +247,7 @@ export default function WorkflowDetailPage() {
 
             <button
               onClick={handleRun}
-              disabled={!scene.trim() || (wf.status !== 'idle' && wf.status !== 'video_done')}
+              disabled={!allFieldsFilled || (wf.status !== 'idle' && wf.status !== 'video_done')}
               className="w-full mt-2 py-3 bg-[#0a0a0a] text-white rounded-full text-[14px] font-medium hover:bg-[#333] transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {!session

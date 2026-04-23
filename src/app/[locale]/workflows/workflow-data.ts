@@ -9,6 +9,15 @@ export interface WorkflowPrompt {
   text: string
 }
 
+export interface WorkflowField {
+  key: string
+  label: string
+  labelZh: string
+  placeholder: string
+  placeholderZh: string
+  type?: 'text' | 'textarea'
+}
+
 export interface WorkflowDefinition {
   slug: string
   caseNumber: number
@@ -25,6 +34,7 @@ export interface WorkflowDefinition {
   steps: WorkflowStep[]
   prompts: WorkflowPrompt[]
   tips: string[]
+  fields: WorkflowField[]
   defaultImageModel: string
   defaultVideoModel: string
   trending?: boolean
@@ -85,6 +95,9 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Set frame rate to 24fps to match film standards.',
       'Keep each storyboard panel simple — the simpler the content, the more accurate the motion output.',
     ],
+    fields: [
+      { key: 'YOUR_SCENE', label: 'Scene', labelZh: '场景描述', placeholder: 'e.g. A product journey from factory to customer hands', placeholderZh: '例如：产品从工厂到用户手中的旅程', type: 'textarea' },
+    ],
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/ac25fc3d-b6cb-4149-a8ba-e7e10c5b1faa',
@@ -142,6 +155,10 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Keep panels visually simple. The more crowded each frame, the less reliable the motion.',
       '24fps reads as cinema, 30fps reads as TV. Pick based on the genre.',
       'Grid beats panel-by-panel because Seedance reads all 9 frames as one motion intent.',
+    ],
+    fields: [
+      { key: 'YOUR_SCENE', label: 'Scene', labelZh: '场景描述', placeholder: 'e.g. A samurai battle sequence in a burning temple', placeholderZh: '例如：燃烧寺庙中的武士战斗序列', type: 'textarea' },
+      { key: 'YOUR_CHARACTER', label: 'Character', labelZh: '角色描述', placeholder: 'e.g. Young warrior, silver armor, long black hair', placeholderZh: '例如：年轻战士，银色铠甲，黑色长发', type: 'text' },
     ],
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
@@ -202,6 +219,9 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Use the three-view sheet as the visual anchor for ALL subsequent storyboard frames.',
       'Avoid switching character perspectives within a single clip.',
     ],
+    fields: [
+      { key: 'YOUR_CHARACTER', label: 'Character', labelZh: '角色描述', placeholder: 'e.g. Female knight, red hair, blue eyes, silver plate armor', placeholderZh: '例如：女骑士，红发，蓝眼，银色板甲', type: 'textarea' },
+    ],
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/92a0aa56-441f-40db-b9c9-13410254cb3f',
@@ -259,6 +279,9 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Free animation is more dynamic but less consistent with your source image.',
       'Use storyboard control for key character shots, free animation for action sequences.',
     ],
+    fields: [
+      { key: 'YOUR_LOCATION', label: 'Location', labelZh: '场景地点', placeholder: 'e.g. Abandoned cathedral at the edge of a dark forest', placeholderZh: '例如：黑暗森林边缘的废弃大教堂', type: 'textarea' },
+    ],
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/f08a2fee-89a7-4c7c-a58a-f1306f87419a',
@@ -314,6 +337,9 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     tips: [
       'Use iOS or Android native design language for believable screenshots.',
       'Keep the demo under 15 seconds — attention spans are short on social media.',
+    ],
+    fields: [
+      { key: 'YOUR_APP_CONCEPT', label: 'App concept', labelZh: 'App 概念', placeholder: 'e.g. AI-powered fitness coach that creates personalized workout plans', placeholderZh: '例如：AI 健身教练，创建个性化健身计划', type: 'textarea' },
     ],
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
@@ -372,6 +398,9 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       '30-second spot = 8-10 panels at 3 seconds each.',
       '60-second spot = 15-18 panels at 3-4 seconds each.',
     ],
+    fields: [
+      { key: 'YOUR_PRODUCT', label: 'Product / Brand', labelZh: '产品/品牌', placeholder: 'e.g. Luxury mechanical watch brand "Chronos"', placeholderZh: '例如：高端机械腕表品牌「时序」', type: 'text' },
+    ],
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/09ae3c57-b8fb-4323-ba76-7777541fe4a3',
@@ -417,7 +446,7 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       {
         label: 'GPT IMAGE 2 · MUSIC VIDEO',
         model: 'gpt-image-2',
-        text: 'Create a 6-panel storyboard for a music video:\nIntro: {VISUAL_CONCEPT}\nVerse: {VISUAL_CONCEPT}\nChorus: {VISUAL_CONCEPT}\nStyle: city pop anime, soft summer afternoon light, film grain texture.',
+        text: 'Create a 6-panel storyboard for a music video:\nIntro: {INTRO_VISUAL}\nVerse: {VERSE_VISUAL}\nChorus: {CHORUS_VISUAL}\nStyle: city pop anime, soft summer afternoon light, film grain texture.',
       },
       {
         label: 'SEEDANCE 2.0 · MOTION',
@@ -428,6 +457,11 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     tips: [
       'Produce music FIRST. Knowing tempo and length before designing storyboards lets you precisely match panel timing to beat cuts.',
       'Use Suno\'s song structure (intro/verse/chorus) to organize your storyboard sections.',
+    ],
+    fields: [
+      { key: 'INTRO_VISUAL', label: 'Intro visual', labelZh: '前奏画面', placeholder: 'e.g. Empty street at dawn, first rays of sunlight', placeholderZh: '例如：黎明时分的空街，第一缕阳光', type: 'text' },
+      { key: 'VERSE_VISUAL', label: 'Verse visual', labelZh: '主歌画面', placeholder: 'e.g. Character walking through a bustling market', placeholderZh: '例如：角色穿过热闹的集市', type: 'text' },
+      { key: 'CHORUS_VISUAL', label: 'Chorus visual', labelZh: '副歌画面', placeholder: 'e.g. Dancing under cherry blossoms at sunset', placeholderZh: '例如：夕阳下在樱花树下起舞', type: 'text' },
     ],
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
@@ -486,6 +520,9 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Avoid switching character perspectives within a single clip.',
       'Keep clip duration under 4 seconds — shorter clips accumulate less distortion.',
     ],
+    fields: [
+      { key: 'YOUR_CHARACTER', label: 'Character', labelZh: '角色描述', placeholder: 'e.g. Young woman with neon-blue bob cut, transparent raincoat, LED earrings', placeholderZh: '例如：蓝色霓虹短发少女，透明雨衣，LED 耳环', type: 'textarea' },
+    ],
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/db6ebb63-90dc-47c5-96c5-ab2fa53ed56d',
@@ -542,6 +579,9 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     tips: [
       'Seedance has restrictions on realistic human content. Game and anime styles bypass most limitations.',
       'Include HUD elements in the image — they give Seedance clear layout cues.',
+    ],
+    fields: [
+      { key: 'YOUR_THEME', label: 'Theme', labelZh: '主题', placeholder: 'e.g. Chinese mythology martial arts, ink painting style', placeholderZh: '例如：中国神话武侠，水墨画风格', type: 'text' },
     ],
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',

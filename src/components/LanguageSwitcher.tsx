@@ -70,8 +70,7 @@ export default function LanguageSwitcher() {
     const requestLanguageSwitch = (newLocale: Locale) => {
         setIsMenuOpen(false)
         if (newLocale === currentLocale) return
-        setPendingLocale(newLocale)
-        setShowConfirm(true)
+        router.replace(pathname, { locale: newLocale })
     }
 
     const confirmLanguageSwitch = () => {
