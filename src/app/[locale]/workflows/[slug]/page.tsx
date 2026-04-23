@@ -328,9 +328,18 @@ export default function WorkflowDetailPage() {
             </div>
 
             {wf.error && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-600 text-[13px] rounded-lg">
-                {wf.error}
-              </div>
+              wf.error === 'API_KEY_REQUIRED' ? (
+                <div className="mt-4 p-4 bg-amber-50 border border-amber-200 text-amber-800 text-[13px] rounded-lg flex items-center justify-between">
+                  <span>{locale === 'zh' ? '请先配置 EvoLink API Key' : 'Please configure your EvoLink API Key first'}</span>
+                  <Link href="/profile" className="px-4 py-1.5 bg-amber-600 text-white rounded-full text-[12px] font-medium hover:bg-amber-700 transition">
+                    {locale === 'zh' ? '去配置 →' : 'Configure →'}
+                  </Link>
+                </div>
+              ) : (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-600 text-[13px] rounded-lg">
+                  {wf.error}
+                </div>
+              )
             )}
 
             {wf.videoUrl && (

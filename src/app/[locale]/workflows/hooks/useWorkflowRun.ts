@@ -46,7 +46,16 @@ async function submitStep(params: Record<string, unknown>): Promise<string> {
     body: JSON.stringify(params),
   })
   const data = await res.json()
-  if (!res.ok) throw new Error(data.error || `Submit failed (${res.status})`)
+  if (!res.ok) {
+    const raw = data?.error ?? data?.message ?? ''
+    const msg = typeof raw === 'string' ? raw
+      : typeof raw?.message === 'string' ? raw.message
+      : `Submit failed (${res.status})`
+    if (msg.includes('not configured') || msg.includes('PROVIDER_NOT_FOUND')) {
+      throw new Error('API_KEY_REQUIRED')
+    }
+    throw new Error(msg)
+  }
   return data.taskId
 }
 
