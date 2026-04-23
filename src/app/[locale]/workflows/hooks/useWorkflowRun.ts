@@ -30,8 +30,8 @@ interface WorkflowRunState {
   error: string | null
 }
 
-const POLL_INTERVAL = 3000
-const POLL_TIMEOUT = 300_000
+const POLL_INTERVAL = 4000
+const POLL_TIMEOUT = 600_000
 
 async function submitStep(params: Record<string, unknown>): Promise<string> {
   const res = await apiFetch('/api/workflows/generate', {

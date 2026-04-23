@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "title1": "实战工作流",
+    "title2": "GPT Image 2 × Seedance 2.0",
+    "subtitle": "来自顶级创作者的实战配方，一键运行，无需切换平台。",
+    "browse": "浏览工作流 ↓",
+    "github": "在 GitHub 查看 ↗",
+    "meta": "{count} 个工作流 · 开源 · 每周更新"
+  },
+  "categories": {
+    "all": "全部",
+    "storyboard": "分镜",
+    "character": "角色",
+    "product": "产品演示",
+    "creative": "创意混搭"
+  },
+  "sections": {
+    "storyboard": "分镜工作流",
+    "character": "角色与动画",
+    "product": "应用与产品演示",
+    "creative": "创意混搭"
+  },
+  "card": {
+    "run": "运行工作流 →"
+  },
+  "submit": {
+    "title": "有自己的工作流？",
+    "subtitle": "提交到我们的开源合集。",
+    "cta": "提交工作流 →"
+  },
+  "detail": {
+    "whyItWorks": "为什么有效",
+    "howItRuns": "运行步骤",
+    "prompts": "使用的提示词",
+    "copy": "复制",
+    "tips": "进阶技巧",
+    "related": "相关工作流",
+    "runPanel": "运行此工作流",
+    "scene": "场景描述",
+    "sceneHint": "必填",
+    "scenePlaceholder": "例如：一位武士在雨夜穿过东京的小巷...",
+    "character": "角色锁定",
+    "characterHint": "选填",
+    "characterPlaceholder": "例如：20多岁男性，黑色短发，皮夹克",
+    "style": "风格",
+    "ratio": "比例",
+    "duration": "时长",
+    "run": "运行工作流",
+    "running": "运行中...",
+    "done": "完成 ✓",
+    "loginRequired": "登录后运行工作流",
+    "reset": "重置",
+    "sharedBy": "创作者",
+    "result": "生成结果",
+    "generatingImage": "正在生成图片...",
+    "generatingVideo": "正在生成视频...",
+    "startingVideo": "准备生成视频...",
+    "waitingImage": "等待图片生成",
+    "waiting": "等待中",
+    "downloadVideo": "下载视频",
+    "downloadImage": "下载图片",
+    "notFound": "未找到该工作流",
+    "backToList": "← 返回工作流列表"
+  }
+}

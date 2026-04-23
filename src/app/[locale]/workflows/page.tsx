@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Navbar from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { Link } from '@/i18n/navigation'
@@ -11,11 +12,11 @@ for (const w of WORKFLOWS) {
   CATEGORY_COUNTS[w.category] = (CATEGORY_COUNTS[w.category] || 0) + 1
 }
 
-function WorkflowCard({ workflow }: { workflow: WorkflowDefinition }) {
+function WorkflowCard({ workflow, runLabel }: { workflow: WorkflowDefinition; runLabel: string }) {
   return (
     <Link
       href={`/workflows/${workflow.slug}`}
-      className="group block bg-white border border-[#e5e5e5] rounded-2xl overflow-hidden transition-all hover:border-[#0a0a0a] hover:-translate-y-0.5"
+      className="group relative block bg-white border border-[#e5e5e5] rounded-2xl overflow-hidden transition-all hover:border-[#0a0a0a] hover:-translate-y-0.5"
     >
       {workflow.trending && (
         <div className="absolute top-3 right-3 z-10 px-2.5 py-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[10px] font-medium rounded-full">
@@ -36,7 +37,7 @@ function WorkflowCard({ workflow }: { workflow: WorkflowDefinition }) {
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-mono text-[#999]">{workflow.creator}</span>
           <span className="text-[12px] font-medium text-[#0a0a0a] opacity-0 group-hover:opacity-100 transition-opacity">
-            Run workflow →
+            {runLabel}
           </span>
         </div>
       </div>
@@ -46,6 +47,7 @@ function WorkflowCard({ workflow }: { workflow: WorkflowDefinition }) {
 
 export default function WorkflowsPage() {
   const [activeCategory, setActiveCategory] = useState('all')
+  const t = useTranslations('workflows')
 
   const filtered = activeCategory === 'all'
     ? WORKFLOWS
@@ -58,11 +60,11 @@ export default function WorkflowsPage() {
     grouped.set(w.category, list)
   }
 
-  const categoryLabel: Record<string, string> = {
-    storyboard: 'Storyboard Workflows',
-    character: 'Character & Animation',
-    product: 'App & Product Demos',
-    creative: 'Creative Mashups',
+  const sectionLabels: Record<string, string> = {
+    storyboard: t('sections.storyboard'),
+    character: t('sections.character'),
+    product: t('sections.product'),
+    creative: t('sections.creative'),
   }
 
   return (
@@ -73,17 +75,17 @@ export default function WorkflowsPage() {
         {/* Hero */}
         <div className="py-20 px-10 text-center max-w-[900px] mx-auto">
           <h1 className="font-mono text-5xl font-normal tracking-tight leading-tight mb-7">
-            Proven Workflows for<br />
+            {t('hero.title1')}<br />
             <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
-              GPT Image 2 × Seedance 2.0
+              {t('hero.title2')}
             </span>
           </h1>
           <p className="font-mono text-[17px] text-[#555] leading-relaxed max-w-[640px] mx-auto mb-9">
-            Battle-tested recipes from top creators. Run them with one click — no platform switching, no setup.
+            {t('hero.subtitle')}
           </p>
           <div className="flex gap-3 justify-center">
             <a href="#workflows" className="px-7 py-3.5 bg-[#0a0a0a] text-white rounded-full text-[15px] font-medium hover:bg-[#333] transition">
-              Browse Workflows ↓
+              {t('hero.browse')}
             </a>
             <a
               href="https://github.com/EvoLinkAI/GPT-Image-2-Seedance2-Workflow"
@@ -91,10 +93,10 @@ export default function WorkflowsPage() {
               rel="noopener noreferrer"
               className="px-6 py-3.5 bg-white text-[#0a0a0a] border border-[#d4d4d4] rounded-full text-[15px] font-medium hover:border-[#0a0a0a] transition"
             >
-              View on GitHub ↗
+              {t('hero.github')}
             </a>
           </div>
-          <div className="text-[13px] text-[#888] mt-3.5">{WORKFLOWS.length} workflows · open source · updated weekly</div>
+          <div className="text-[13px] text-[#888] mt-3.5">{t('hero.meta', { count: WORKFLOWS.length })}</div>
         </div>
 
         {/* Tag bar */}
@@ -111,7 +113,7 @@ export default function WorkflowsPage() {
                     : 'bg-white text-[#555] border-[#e5e5e5] hover:border-[#0a0a0a]'
                 }`}
               >
-                {cat.label} · {count}
+                {t(`categories.${cat.key}`)} · {count}
               </button>
             )
           })}
@@ -122,12 +124,12 @@ export default function WorkflowsPage() {
           <div key={category} className="py-9 px-10 max-w-[1180px] mx-auto">
             <div className="flex items-baseline gap-4 mb-6">
               <span className="font-mono text-[13px] text-[#999]">{String(groupIdx + 1).padStart(2, '0')}</span>
-              <h2 className="font-mono text-[22px] font-normal tracking-tight">{categoryLabel[category] || category}</h2>
+              <h2 className="font-mono text-[22px] font-normal tracking-tight">{sectionLabels[category] || category}</h2>
               <div className="flex-1 h-px bg-[#f0f0f0]" />
             </div>
             <div className={`grid gap-5 ${workflows.length >= 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`}>
               {workflows.map((w) => (
-                <WorkflowCard key={w.slug} workflow={w} />
+                <WorkflowCard key={w.slug} workflow={w} runLabel={t('card.run')} />
               ))}
             </div>
           </div>
@@ -137,8 +139,8 @@ export default function WorkflowsPage() {
         <div className="py-10 px-10 bg-gradient-to-br from-[#fafafa] to-[#f5f5f5] border-t border-[#f0f0f0]">
           <div className="max-w-[1100px] mx-auto flex items-center justify-between flex-wrap gap-6">
             <div>
-              <h3 className="font-mono text-[22px] font-normal tracking-tight mb-2">Got your own workflow?</h3>
-              <p className="text-[14px] text-[#555]">Submit it to our open-source collection.</p>
+              <h3 className="font-mono text-[22px] font-normal tracking-tight mb-2">{t('submit.title')}</h3>
+              <p className="text-[14px] text-[#555]">{t('submit.subtitle')}</p>
             </div>
             <a
               href="https://github.com/EvoLinkAI/GPT-Image-2-Seedance2-Workflow/issues/new"
@@ -146,7 +148,7 @@ export default function WorkflowsPage() {
               rel="noopener noreferrer"
               className="px-7 py-3.5 bg-[#0a0a0a] text-white rounded-full text-[15px] font-medium hover:bg-[#333] transition"
             >
-              Submit workflow →
+              {t('submit.cta')}
             </a>
           </div>
         </div>

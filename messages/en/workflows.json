@@ -1,0 +1,66 @@
+{
+  "hero": {
+    "title1": "Proven Workflows for",
+    "title2": "GPT Image 2 × Seedance 2.0",
+    "subtitle": "Battle-tested recipes from top creators. Run them with one click — no platform switching, no setup.",
+    "browse": "Browse Workflows ↓",
+    "github": "View on GitHub ↗",
+    "meta": "{count} workflows · open source · updated weekly"
+  },
+  "categories": {
+    "all": "All",
+    "storyboard": "Storyboard",
+    "character": "Character",
+    "product": "Product Demo",
+    "creative": "Creative Mashup"
+  },
+  "sections": {
+    "storyboard": "Storyboard Workflows",
+    "character": "Character & Animation",
+    "product": "App & Product Demos",
+    "creative": "Creative Mashups"
+  },
+  "card": {
+    "run": "Run workflow →"
+  },
+  "submit": {
+    "title": "Got your own workflow?",
+    "subtitle": "Submit it to our open-source collection.",
+    "cta": "Submit workflow →"
+  },
+  "detail": {
+    "whyItWorks": "WHY IT WORKS",
+    "howItRuns": "How it runs",
+    "prompts": "The prompts we use",
+    "copy": "Copy",
+    "tips": "Pro tips",
+    "related": "Related workflows",
+    "runPanel": "RUN THIS WORKFLOW",
+    "scene": "Scene",
+    "sceneHint": "required",
+    "scenePlaceholder": "e.g. A lone samurai walks through a rain-soaked Tokyo alley at night...",
+    "character": "Character lock",
+    "characterHint": "optional",
+    "characterPlaceholder": "e.g. late-20s man, black hair, leather coat",
+    "style": "Style",
+    "ratio": "Ratio",
+    "duration": "Duration",
+    "run": "Run workflow",
+    "running": "Running...",
+    "done": "Done ✓",
+    "loginRequired": "Sign in to run workflows",
+    "reset": "Reset",
+    "credits": "~{count} credits",
+    "sharedBy": "Shared by",
+    "result": "Result",
+    "generatingImage": "Generating image...",
+    "generatingVideo": "Generating video...",
+    "startingVideo": "Starting video...",
+    "waitingImage": "Waiting for image",
+    "waiting": "Waiting",
+    "downloadVideo": "Download Video",
+    "downloadImage": "Download Image",
+    "notFound": "Workflow not found",
+    "backToList": "← Back to workflows"
+  }
+}

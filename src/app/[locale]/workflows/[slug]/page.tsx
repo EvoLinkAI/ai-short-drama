@@ -1,34 +1,43 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
+import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import Navbar from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
-import { Link } from '@/i18n/navigation'
+import { Link, useRouter } from '@/i18n/navigation'
 import { getWorkflowBySlug, WORKFLOWS } from '../workflow-data'
 import { useWorkflowRun } from '../hooks/useWorkflowRun'
 import { trackEvent } from '@/lib/analytics'
 
 const STYLE_OPTIONS = ['Anime OP', 'Cinematic', 'Cyberpunk', 'Painterly']
 const RATIO_OPTIONS = ['16:9', '9:16', '1:1']
-const DURATION_OPTIONS = [3, 5, 10]
+const DURATION_OPTIONS = [6, 10, 15]
 
 export default function WorkflowDetailPage() {
+  const { data: session } = useSession()
   const params = useParams() ?? {}
   const slug = typeof params.slug === 'string' ? params.slug : ''
   const workflow = getWorkflowBySlug(slug)
   const wf = useWorkflowRun()
+  const router = useRouter()
+  const t = useTranslations('workflows.detail')
 
   const [scene, setScene] = useState('')
   const [character, setCharacter] = useState('')
   const [style, setStyle] = useState('Anime OP')
   const [ratio, setRatio] = useState('16:9')
-  const [duration, setDuration] = useState(5)
+  const [duration, setDuration] = useState(10)
 
   const resultRef = useRef<HTMLDivElement>(null)
 
   const handleRun = useCallback(() => {
     if (!workflow || !scene.trim()) return
+    if (!session) {
+      router.push({ pathname: '/auth/signin' })
+      return
+    }
     trackEvent('workflow_run')
 
     const imagePrompt = workflow.prompts[0]?.text
@@ -55,15 +64,15 @@ export default function WorkflowDetailPage() {
     })
 
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: 'smooth' }), 300)
-  }, [workflow, scene, character, style, ratio, duration, wf])
+  }, [workflow, scene, character, style, ratio, duration, wf, session, router])
 
   if (!workflow) {
     return (
-      <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-mono mb-4">Workflow not found</h1>
+          <h1 className="text-2xl font-mono mb-4">{t('notFound')}</h1>
           <Link href="/workflows" className="text-indigo-600 hover:underline">
-            ← Back to workflows
+            {t('backToList')}
           </Link>
         </div>
       </div>
@@ -111,7 +120,6 @@ export default function WorkflowDetailPage() {
             <div><span className="font-mono text-[11px] text-[#999] block">CREATOR</span><span className="font-medium">{workflow.creator}</span></div>
             <div><span className="font-mono text-[11px] text-[#999] block">DIFFICULTY</span><span className="font-medium">{workflow.difficulty}</span></div>
             <div><span className="font-mono text-[11px] text-[#999] block">RUN TIME</span><span className="font-medium">{workflow.estimatedTime}</span></div>
-            <div><span className="font-mono text-[11px] text-[#999] block">COST</span><span className="font-medium">{workflow.estimatedCredits} credits</span></div>
           </div>
         </div>
 
@@ -120,14 +128,12 @@ export default function WorkflowDetailPage() {
 
           {/* Left column */}
           <div>
-            {/* Why it works */}
             <div className="p-5 bg-gradient-to-br from-[#faf5ff] to-[#f3e8ff] border border-[#e9d5ff] rounded-xl mb-6">
-              <div className="font-mono text-[10px] text-[#7c3aed] tracking-widest mb-2">WHY IT WORKS</div>
+              <div className="font-mono text-[10px] text-[#7c3aed] tracking-widest mb-2">{t('whyItWorks')}</div>
               <p className="text-[15px] text-[#3b0764] leading-relaxed">{workflow.whyItWorks}</p>
             </div>
 
-            {/* Steps */}
-            <h3 className="font-mono text-lg font-normal tracking-tight mb-3.5">How it runs</h3>
+            <h3 className="font-mono text-lg font-normal tracking-tight mb-3.5">{t('howItRuns')}</h3>
             <div className="flex flex-col gap-2.5 mb-8">
               {workflow.steps.map((step, i) => (
                 <div key={i} className="flex gap-3.5 items-start p-4 bg-white border border-[#e5e5e5] rounded-xl">
@@ -142,8 +148,7 @@ export default function WorkflowDetailPage() {
               ))}
             </div>
 
-            {/* Prompts */}
-            <h3 className="font-mono text-lg font-normal tracking-tight mb-3.5">The prompts we use</h3>
+            <h3 className="font-mono text-lg font-normal tracking-tight mb-3.5">{t('prompts')}</h3>
             {workflow.prompts.map((p, i) => (
               <div key={i} className="bg-[#fafafa] border border-[#eee] rounded-xl p-4 mb-2.5">
                 <div className="font-mono text-[10px] text-[#8b5cf6] tracking-widest mb-2 flex justify-between items-center">
@@ -152,7 +157,7 @@ export default function WorkflowDetailPage() {
                     onClick={() => navigator.clipboard?.writeText(p.text)}
                     className="px-2.5 py-0.5 bg-white border border-[#d4d4d4] rounded-full text-[10.5px] text-[#555] hover:border-[#0a0a0a] hover:text-[#0a0a0a] transition"
                   >
-                    Copy
+                    {t('copy')}
                   </button>
                 </div>
                 <pre className="bg-white border border-[#eee] rounded-md p-3 text-[12.5px] text-[#333] font-mono whitespace-pre-wrap leading-relaxed">
@@ -161,8 +166,7 @@ export default function WorkflowDetailPage() {
               </div>
             ))}
 
-            {/* Tips */}
-            <h3 className="font-mono text-lg font-normal tracking-tight mt-8 mb-3.5">Pro tips</h3>
+            <h3 className="font-mono text-lg font-normal tracking-tight mt-8 mb-3.5">{t('tips')}</h3>
             {workflow.tips.map((tip, i) => (
               <div
                 key={i}
@@ -179,35 +183,35 @@ export default function WorkflowDetailPage() {
 
           {/* Right column: Run panel */}
           <aside className="lg:sticky lg:top-20 self-start bg-white border border-[#e5e5e5] rounded-2xl p-5">
-            <div className="font-mono text-[11px] text-[#999] tracking-widest mb-4">RUN THIS WORKFLOW</div>
+            <div className="font-mono text-[11px] text-[#999] tracking-widest mb-4">{t('runPanel')}</div>
 
             <div className="mb-4">
               <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">
-                Scene <span className="font-mono text-[11px] text-[#999] font-normal ml-1">required</span>
+                {t('scene')} <span className="font-mono text-[11px] text-[#999] font-normal ml-1">{t('sceneHint')}</span>
               </label>
               <textarea
                 value={scene}
                 onChange={(e) => setScene(e.target.value)}
-                placeholder="e.g. A lone samurai walks through a rain-soaked Tokyo alley at night..."
+                placeholder={t('scenePlaceholder')}
                 className="w-full border border-[#d4d4d4] rounded-lg px-3 py-2.5 text-[13px] min-h-[84px] resize-y focus:outline-none focus:border-[#0a0a0a] transition"
               />
             </div>
 
             <div className="mb-4">
               <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">
-                Character lock <span className="font-mono text-[11px] text-[#999] font-normal ml-1">optional</span>
+                {t('character')} <span className="font-mono text-[11px] text-[#999] font-normal ml-1">{t('characterHint')}</span>
               </label>
               <input
                 type="text"
                 value={character}
                 onChange={(e) => setCharacter(e.target.value)}
-                placeholder="e.g. late-20s man, black hair, leather coat"
+                placeholder={t('characterPlaceholder')}
                 className="w-full border border-[#d4d4d4] rounded-lg px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#0a0a0a] transition"
               />
             </div>
 
             <div className="mb-4">
-              <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">Style</label>
+              <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">{t('style')}</label>
               <div className="flex flex-wrap gap-1.5">
                 {STYLE_OPTIONS.map((s) => (
                   <button
@@ -224,7 +228,7 @@ export default function WorkflowDetailPage() {
             </div>
 
             <div className="mb-4">
-              <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">Ratio</label>
+              <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">{t('ratio')}</label>
               <div className="flex gap-1.5">
                 {RATIO_OPTIONS.map((r) => (
                   <button
@@ -241,7 +245,7 @@ export default function WorkflowDetailPage() {
             </div>
 
             <div className="mb-4">
-              <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">Duration</label>
+              <label className="block text-[13px] font-medium text-[#0a0a0a] mb-1.5">{t('duration')}</label>
               <div className="flex gap-1.5">
                 {DURATION_OPTIONS.map((d) => (
                   <button
@@ -259,26 +263,27 @@ export default function WorkflowDetailPage() {
 
             <button
               onClick={handleRun}
-              disabled={!scene.trim() || wf.status !== 'idle'}
+              disabled={!scene.trim() || (wf.status !== 'idle' && wf.status !== 'video_done')}
               className="w-full mt-2 py-3 bg-[#0a0a0a] text-white rounded-full text-[14px] font-medium hover:bg-[#333] transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {wf.status === 'idle' ? 'Run workflow' : wf.status === 'video_done' ? 'Done ✓' : 'Running...'}
+              {!session
+                ? t('loginRequired')
+                : wf.status === 'idle' || wf.status === 'video_done'
+                  ? t('run')
+                  : t('running')}
             </button>
-            <div className="text-center mt-2 text-[11px] font-mono text-[#888]">
-              ~{workflow.estimatedCredits} credits
-            </div>
 
             {wf.status !== 'idle' && (
               <button
                 onClick={wf.reset}
                 className="w-full mt-2 py-2 text-[13px] text-[#555] hover:text-[#0a0a0a] transition"
               >
-                Reset
+                {t('reset')}
               </button>
             )}
 
             <div className="mt-4 pt-4 border-t border-[#f0f0f0] text-[12px] text-[#777] leading-relaxed">
-              Shared by <span className="font-medium text-[#0a0a0a]">{workflow.creator}</span>
+              {t('sharedBy')} <span className="font-medium text-[#0a0a0a]">{workflow.creator}</span>
             </div>
           </aside>
         </div>
@@ -286,9 +291,8 @@ export default function WorkflowDetailPage() {
         {/* Result area */}
         {wf.status !== 'idle' && (
           <div ref={resultRef} className="px-10 pb-12 max-w-[1180px] mx-auto">
-            <h3 className="font-mono text-lg font-normal tracking-tight mb-4">Result</h3>
+            <h3 className="font-mono text-lg font-normal tracking-tight mb-4">{t('result')}</h3>
 
-            {/* Progress bar */}
             <div className="h-1.5 bg-[#f0f0f0] rounded-full overflow-hidden mb-6">
               <div
                 className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
@@ -297,28 +301,25 @@ export default function WorkflowDetailPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-center">
-              {/* Image result */}
               <div className="bg-[#fafafa] border border-[#e5e5e5] rounded-2xl aspect-video overflow-hidden flex items-center justify-center">
                 {wf.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={wf.imageUrl} alt="Generated storyboard" className="w-full h-full object-cover" />
                 ) : (
                   <div className="text-[13px] text-[#999] font-mono">
-                    {wf.status === 'generating_image' ? 'Generating image...' : 'Waiting'}
+                    {wf.status === 'generating_image' ? t('generatingImage') : t('waiting')}
                   </div>
                 )}
               </div>
 
-              {/* Arrow */}
               <div className="text-2xl font-mono text-[#0a0a0a] hidden md:block">→</div>
 
-              {/* Video result */}
               <div className="bg-gradient-to-br from-[#1a0f2a] to-[#0a0515] border border-[#e5e5e5] rounded-2xl aspect-video overflow-hidden flex items-center justify-center relative">
                 {wf.videoUrl ? (
                   <video src={wf.videoUrl} controls autoPlay className="w-full h-full object-cover" />
                 ) : (
                   <div className="text-[13px] text-white/60 font-mono">
-                    {wf.status === 'generating_video' ? 'Generating video...' : wf.status === 'image_done' ? 'Starting video...' : 'Waiting for image'}
+                    {wf.status === 'generating_video' ? t('generatingVideo') : wf.status === 'image_done' ? t('startingVideo') : t('waitingImage')}
                   </div>
                 )}
               </div>
@@ -339,7 +340,7 @@ export default function WorkflowDetailPage() {
                   rel="noopener noreferrer"
                   className="px-5 py-2.5 bg-[#0a0a0a] text-white rounded-full text-[13px] font-medium hover:bg-[#333] transition"
                 >
-                  Download Video
+                  {t('downloadVideo')}
                 </a>
                 {wf.imageUrl && (
                   <a
@@ -349,7 +350,7 @@ export default function WorkflowDetailPage() {
                     rel="noopener noreferrer"
                     className="px-5 py-2.5 bg-white text-[#0a0a0a] border border-[#d4d4d4] rounded-full text-[13px] font-medium hover:border-[#0a0a0a] transition"
                   >
-                    Download Image
+                    {t('downloadImage')}
                   </a>
                 )}
               </div>
@@ -359,7 +360,7 @@ export default function WorkflowDetailPage() {
 
         {/* Related workflows */}
         <div className="py-10 px-10 bg-[#fafafa] border-t border-[#f0f0f0]">
-          <h3 className="font-mono text-xl font-normal tracking-tight max-w-[1100px] mx-auto mb-5">Related workflows</h3>
+          <h3 className="font-mono text-xl font-normal tracking-tight max-w-[1100px] mx-auto mb-5">{t('related')}</h3>
           <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
             {related.map((w) => (
               <Link

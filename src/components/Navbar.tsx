@@ -5,6 +5,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { AppIcon } from '@/components/ui/icons'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export default function Navbar() {
   const { data: session, status } = useSession()
@@ -67,8 +68,9 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Right: User menu / Auth */}
-        <div className="flex items-center justify-end gap-4">
+        {/* Right: Language + User menu / Auth */}
+        <div className="flex items-center justify-end gap-3">
+          <LanguageSwitcher />
           {status === 'loading' ? (
             <div className="flex items-center gap-3">
               <div className="h-4 w-14 rounded bg-[#f5f5f5] animate-pulse" />
