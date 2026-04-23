@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import Navbar from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
@@ -11,6 +11,45 @@ import { useLocale } from 'next-intl'
 const CATEGORY_COUNTS: Record<string, number> = {}
 for (const w of WORKFLOWS) {
   CATEGORY_COUNTS[w.category] = (CATEGORY_COUNTS[w.category] || 0) + 1
+}
+
+function LazyVideo({ src }: { src: string }) {
+  const ref = useRef<HTMLVideoElement>(null)
+  const [shouldLoad, setShouldLoad] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el || shouldLoad) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setShouldLoad(true)
+          io.disconnect()
+        }
+      },
+      { rootMargin: '200px' },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [shouldLoad])
+
+  useEffect(() => {
+    if (shouldLoad && ref.current) {
+      ref.current.play().catch(() => {})
+    }
+  }, [shouldLoad])
+
+  return (
+    <video
+      ref={ref}
+      src={shouldLoad ? src : undefined}
+      muted
+      loop
+      playsInline
+      preload="none"
+      className="w-full h-full object-cover"
+    />
+  )
 }
 
 function WorkflowCard({ workflow, runLabel }: { workflow: WorkflowDefinition; runLabel: string }) {
@@ -26,16 +65,7 @@ function WorkflowCard({ workflow, runLabel }: { workflow: WorkflowDefinition; ru
       )}
       <div className="relative aspect-video bg-gradient-to-br from-[#1a0f2a] to-[#0a0515] flex items-center justify-center border-b border-[#eee] overflow-hidden">
         {workflow.previewVideoUrl ? (
-          <video
-            src={workflow.previewVideoUrl}
-            muted
-            loop
-            playsInline
-            preload="none"
-            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-            onMouseEnter={(e) => (e.target as HTMLVideoElement).play().catch(() => {})}
-            onMouseLeave={(e) => { const v = e.target as HTMLVideoElement; v.pause(); v.currentTime = 0 }}
-          />
+          <LazyVideo src={workflow.previewVideoUrl} />
         ) : (
           <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
             <div className="w-0 h-0 border-l-[10px] border-l-white border-t-[7px] border-t-transparent border-b-[7px] border-b-transparent ml-1" />
