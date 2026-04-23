@@ -5,7 +5,8 @@ import { useTranslations } from 'next-intl'
 import Navbar from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { Link } from '@/i18n/navigation'
-import { WORKFLOWS, WORKFLOW_CATEGORIES, type WorkflowDefinition } from './workflow-data'
+import { WORKFLOWS, WORKFLOW_CATEGORIES, localizeWorkflow, type WorkflowDefinition } from './workflow-data'
+import { useLocale } from 'next-intl'
 
 const CATEGORY_COUNTS: Record<string, number> = {}
 for (const w of WORKFLOWS) {
@@ -61,10 +62,12 @@ function WorkflowCard({ workflow, runLabel }: { workflow: WorkflowDefinition; ru
 export default function WorkflowsPage() {
   const [activeCategory, setActiveCategory] = useState('all')
   const t = useTranslations('workflows')
+  const locale = useLocale()
 
+  const allLocalized = WORKFLOWS.map((w) => localizeWorkflow(w, locale))
   const filtered = activeCategory === 'all'
-    ? WORKFLOWS
-    : WORKFLOWS.filter((w) => w.category === activeCategory)
+    ? allLocalized
+    : allLocalized.filter((w) => w.category === activeCategory)
 
   const grouped = new Map<string, WorkflowDefinition[]>()
   for (const w of filtered) {

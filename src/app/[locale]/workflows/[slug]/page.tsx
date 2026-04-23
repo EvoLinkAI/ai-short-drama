@@ -7,7 +7,8 @@ import { useTranslations } from 'next-intl'
 import Navbar from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { Link, useRouter } from '@/i18n/navigation'
-import { getWorkflowBySlug, WORKFLOWS } from '../workflow-data'
+import { getWorkflowBySlug, WORKFLOWS, localizeWorkflow } from '../workflow-data'
+import { useLocale } from 'next-intl'
 import { useWorkflowRun } from '../hooks/useWorkflowRun'
 import { trackEvent } from '@/lib/analytics'
 
@@ -19,7 +20,9 @@ export default function WorkflowDetailPage() {
   const { data: session } = useSession()
   const params = useParams() ?? {}
   const slug = typeof params.slug === 'string' ? params.slug : ''
-  const workflow = getWorkflowBySlug(slug)
+  const locale = useLocale()
+  const rawWorkflow = getWorkflowBySlug(slug)
+  const workflow = rawWorkflow ? localizeWorkflow(rawWorkflow, locale) : undefined
   const wf = useWorkflowRun()
   const router = useRouter()
   const t = useTranslations('workflows.detail')
@@ -79,7 +82,7 @@ export default function WorkflowDetailPage() {
     )
   }
 
-  const related = WORKFLOWS.filter((w) => w.slug !== slug).slice(0, 3)
+  const related = WORKFLOWS.filter((w) => w.slug !== slug).slice(0, 3).map((w) => localizeWorkflow(w, locale))
 
   return (
     <div className="min-h-screen bg-white">

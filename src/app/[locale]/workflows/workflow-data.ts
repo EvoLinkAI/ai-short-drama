@@ -29,6 +29,15 @@ export interface WorkflowDefinition {
   defaultVideoModel: string
   trending?: boolean
   previewVideoUrl?: string
+  zh?: {
+    title: string
+    subtitle: string
+    description: string
+    whyItWorks: string
+    difficulty: string
+    steps: WorkflowStep[]
+    tips: string[]
+  }
 }
 
 export const WORKFLOW_CATEGORIES = [
@@ -79,6 +88,24 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/ac25fc3d-b6cb-4149-a8ba-e7e10c5b1faa',
+    zh: {
+      title: '标准分镜 → 视频',
+      subtitle: '经典 6 格分镜工作流',
+      description: '最常见的工作流。用 GPT Image 2 生成分镜画面，再用 Seedance 2.0 动画化。适合品牌宣传、短剧和动画 OP。',
+      whyItWorks: 'GPT Image 2 锁定视觉——角色设计、光影、构图。Seedance 2.0 只需要处理运动，当输入是一个干净、构图良好的画面时，它的表现非常稳定。',
+      difficulty: '入门',
+      steps: [
+        { title: '描述你的场景', description: 'GPT Image 2 生成 6 格分镜图片。' },
+        { title: '自动传递给 Seedance 2.0', description: '分镜直接流入视频模型，无需下载重传。' },
+        { title: '动画化', description: 'Seedance 读取分镜并生成连续画面。' },
+        { title: '下载', description: '同时获得分镜图片和最终视频。' },
+      ],
+      tips: [
+        '输出分镜图片时使用 16:9 比例，避免 Seedance 自动裁剪。',
+        '帧率设为 24fps 以匹配电影标准。',
+        '每个分镜格越简洁，运动输出越准确。',
+      ],
+    },
   },
   {
     slug: '3x3-grid-storyboard',
@@ -120,6 +147,24 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     defaultVideoModel: 'seedance-2.0-image-to-video',
     trending: true,
     previewVideoUrl: 'https://github.com/user-attachments/assets/00f32388-a17b-4b9c-8da3-1956436ce91b',
+    zh: {
+      title: '3×3 网格分镜法',
+      subtitle: '9 格合一，失败率大幅降低',
+      description: '社区发现的技巧。将 9 个分镜合成一张网格图再交给 Seedance，它会把整张图当作一个连续运动意图来解读，比逐格导入的失败率低得多。',
+      whyItWorks: 'Seedance 从单张图片分析运动意图。当你把 9 格排成视觉序列时，它把整张网格当作一个方向性提示——生成连续运动，而不是拼接 9 个独立片段时的卡顿。',
+      difficulty: '入门',
+      steps: [
+        { title: '生成 3×3 网格', description: 'GPT Image 2 将 9 个分镜渲染为一张图，角色和风格保持一致。' },
+        { title: '自动传递给 Seedance 2.0', description: '网格直接流入视频模型。' },
+        { title: '作为运动序列动画化', description: 'Seedance 把 9 格当作一个运动意图，生成连续片段。' },
+        { title: '输出 MP4 + 网格', description: '同时获得最终视频和源分镜网格。' },
+      ],
+      tips: [
+        '每格内容越简洁，运动越可靠。一个主体，一个动作意图。',
+        '24fps 是电影感，30fps 是电视感。根据目标类型选择。',
+        '网格优于逐格，因为 Seedance 把 9 格当作一个运动意图——没有片段间的拼接瑕疵。',
+      ],
+    },
   },
   {
     slug: 'character-sheet-animation',
@@ -160,6 +205,24 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/92a0aa56-441f-40db-b9c9-13410254cb3f',
+    zh: {
+      title: '角色设定表 → 动画',
+      subtitle: '三视图转运动',
+      description: '用 GPT Image 2 生成角色三视图（正面、侧面、背面），然后作为 Seedance 2.0 动画的一致性锚点。适合动漫角色、游戏角色和手办展示。',
+      whyItWorks: '三视图让 Seedance 完整理解角色的各个角度，因此能生成一致的旋转和运动，不会凭空脑补缺失的细节。',
+      difficulty: '进阶',
+      steps: [
+        { title: '生成角色设定表', description: 'GPT Image 2 在一张图中创建正/侧/背三个视角。' },
+        { title: '生成分镜帧', description: '以设定表为参考创建动作姿态。' },
+        { title: '动画化', description: 'Seedance 2.0 以一致的设计让角色动起来。' },
+        { title: '下载', description: '获得角色设定表和动画视频。' },
+      ],
+      tips: [
+        '在角色提示词中包含发色、瞳色、服装描述和体型。',
+        '把三视图作为后续所有分镜帧的视觉锚点。',
+        '避免在单个片段中切换角色视角。',
+      ],
+    },
   },
   {
     slug: 'anime-op-style',
@@ -199,6 +262,23 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/f08a2fee-89a7-4c7c-a58a-f1306f87419a',
+    zh: {
+      title: '动漫 OP 风格视频',
+      subtitle: '暗黑奇幻高冲击剪辑',
+      description: '用 GPT Image 2 构建场景设定图，然后让 Seedance 2.0 自由发挥动画。适合动漫片头的动态镜头工作。',
+      whyItWorks: '当 Seedance 没有分镜约束自由发挥时，结果更具动感。动作序列用这种方式，比受控运动更有张力。',
+      difficulty: '进阶',
+      steps: [
+        { title: '生成场景设定', description: 'GPT Image 2 创建详细的场景插画。' },
+        { title: '导入 Seedance', description: '使用最简运动提示——让模型自己决定动作。' },
+        { title: '对比迭代', description: '一版严格控制，一版自由动画，择优使用。' },
+        { title: '下载最佳结果', description: '选出适合你序列的版本。' },
+      ],
+      tips: [
+        '自由动画更有动感，但与源图的一致性较低。',
+        '关键角色镜头用分镜控制，动作戏用自由动画。',
+      ],
+    },
   },
   {
     slug: 'app-mvp-demo',
@@ -238,6 +318,23 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/09d81a41-b5c5-47f3-8c67-442b7a93b019',
+    zh: {
+      title: 'App MVP 演示视频',
+      subtitle: '写代码前先验证市场',
+      description: '用 GPT Image 2 生成逼真的 App UI 截图（产品还不存在），再用 Seedance 2.0 做成演示视频。发到社交媒体测试市场反应，再决定是否开发。',
+      whyItWorks: 'GPT Image 2 能生成以假乱真的 UI 截图。Seedance 加上微妙的界面过渡动画，让演示看起来像真实产品。',
+      difficulty: '入门',
+      steps: [
+        { title: '描述你的 App 概念', description: 'GPT Image 2 生成 3-5 张关键 UI 截图。' },
+        { title: '按用户流排序', description: '按逻辑排列：首页 → 功能页 → 个人页。' },
+        { title: '动画化过渡', description: 'Seedance 添加流畅的 UI 过渡动画。' },
+        { title: '发布测试', description: '分享演示视频，观察受众反应。' },
+      ],
+      tips: [
+        '使用 iOS 或 Android 原生设计语言，让截图更可信。',
+        '演示控制在 15 秒内——社交媒体上注意力很短。',
+      ],
+    },
   },
   {
     slug: '15-second-commercial',
@@ -278,6 +375,24 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/09ae3c57-b8fb-4323-ba76-7777541fe4a3',
+    zh: {
+      title: '15 秒广告',
+      subtitle: '主视觉 → 多镜头广告',
+      description: '两步工作流：GPT Image 2 生成主视觉和配套分镜，Seedance 2.0 逐镜头动画化。加上字幕和音乐即可得到完整的 15 秒广告。',
+      whyItWorks: '从单一主视觉出发，确保所有镜头继承相同的色彩、光影和构图——品牌一致性天然保证。',
+      difficulty: '进阶',
+      steps: [
+        { title: '生成主视觉', description: '定义品牌视觉风格的锚定图。' },
+        { title: '创建分镜', description: '基于主视觉生成 4-5 格分镜。' },
+        { title: '逐镜头动画化', description: '每格 3-4 秒的运动。' },
+        { title: '组装', description: '在剪辑软件中加字幕和音乐。' },
+      ],
+      tips: [
+        '15 秒 = 4-5 格，每格 3-4 秒。',
+        '30 秒 = 8-10 格，每格 3 秒。',
+        '60 秒 = 15-18 格，每格 3-4 秒。',
+      ],
+    },
   },
   {
     slug: 'music-video-suno',
@@ -317,6 +432,23 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/fd4be5c7-cd02-4a77-ae07-6b80efeff201',
+    zh: {
+      title: 'Suno 音乐 MV',
+      subtitle: '节拍 → 分镜 → 音画同步',
+      description: '三工具组合：GPT Image 2 做画面，Seedance 2.0 做运动，Suno 做音乐。先出音乐锁定节奏，再根据拍点设计分镜。',
+      whyItWorks: '先出音乐锁定节奏和结构。知道 BPM 和歌曲段落后，就能精确地让每格分镜卡在拍点上。',
+      difficulty: '高级',
+      steps: [
+        { title: '生成音乐', description: '先在 Suno 创建目标风格的曲目。' },
+        { title: '按段落设计分镜', description: '前奏/主歌/副歌各有专属分镜。' },
+        { title: '逐格动画化', description: '片段时长匹配拍点结构。' },
+        { title: '音画同步', description: '在剪辑软件中对齐画面和音乐。' },
+      ],
+      tips: [
+        '先出音乐。知道节奏和时长再设计分镜，才能精确卡拍。',
+        '利用 Suno 的歌曲结构（前奏/主歌/副歌）组织分镜段落。',
+      ],
+    },
   },
   {
     slug: 'cyberpunk-short-film',
@@ -357,6 +489,24 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/db6ebb63-90dc-47c5-96c5-ab2fa53ed56d',
+    zh: {
+      title: '赛博朋克短片',
+      subtitle: '霓虹灯下的视觉叙事',
+      description: '用 GPT Image 2 建立一致的视觉体系（赛博朋克、霓虹、灯笼），再用 Seedance 2.0 逐帧动画化，产出风格化短片。',
+      whyItWorks: '在 GPT Image 2 中固定视觉体系（色彩、光影、角色造型），意味着 Seedance 动画化的每一帧都共享相同的氛围——片段间没有违和的风格跳跃。',
+      difficulty: '进阶',
+      steps: [
+        { title: '定义视觉风格', description: '在 GPT Image 2 中固定色彩、光影和角色造型。' },
+        { title: '生成 4-6 张氛围图', description: '每张图都传递相同的赛博朋克美感。' },
+        { title: '慢运动动画化', description: '大气的镜头漂移和粒子效果。' },
+        { title: '编排成叙事', description: '将片段组成一个短视觉故事。' },
+      ],
+      tips: [
+        '在每个提示词中加简短的角色描述以保持一致性。',
+        '避免在单个片段中切换角色视角。',
+        '片段时长控制在 4 秒内——越短的片段累积的畸变越少。',
+      ],
+    },
   },
   {
     slug: 'game-interactive-ui',
@@ -396,6 +546,23 @@ export const WORKFLOWS: WorkflowDefinition[] = [
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
     previewVideoUrl: 'https://github.com/user-attachments/assets/961c4bc4-c83c-49d3-bc14-7b128e80bc17',
+    zh: {
+      title: '游戏 & 互动 UI',
+      subtitle: 'HUD + 技能栏 + 选项叠加',
+      description: '生成带 HUD 元素、技能栏和选项面板的游戏风格 UI 图片，再用 Seedance 2.0 动画化，模拟互动游戏画面。',
+      whyItWorks: '游戏和插画风格在 Seedance 中受到的内容限制比写实人物少。结构化的 UI 布局也给 Seedance 提供了清晰的空间线索来做动画。',
+      difficulty: '进阶',
+      steps: [
+        { title: '生成游戏 UI', description: 'GPT Image 2 创建带 HUD 元素的 ARPG 风格截图。' },
+        { title: '添加交互提示', description: '描述战斗或菜单交互序列。' },
+        { title: '动画化', description: 'Seedance 模拟 UI 交互和战斗。' },
+        { title: '后期润色', description: '在后期制作中添加粒子效果和光晕。' },
+      ],
+      tips: [
+        'Seedance 对写实人物有内容限制。游戏和动漫风格能绕过大部分限制。',
+        '在图片中包含 HUD 元素——它们给 Seedance 清晰的布局线索。',
+      ],
+    },
   },
 ]
 
@@ -406,4 +573,20 @@ export function getWorkflowBySlug(slug: string): WorkflowDefinition | undefined 
 export function getWorkflowsByCategory(category: string): WorkflowDefinition[] {
   if (category === 'all') return WORKFLOWS
   return WORKFLOWS.filter((w) => w.category === category)
+}
+
+export function localizeWorkflow(w: WorkflowDefinition, locale: string): WorkflowDefinition {
+  if (locale === 'zh' && w.zh) {
+    return {
+      ...w,
+      title: w.zh.title,
+      subtitle: w.zh.subtitle,
+      description: w.zh.description,
+      whyItWorks: w.zh.whyItWorks,
+      difficulty: w.zh.difficulty as WorkflowDefinition['difficulty'],
+      steps: w.zh.steps,
+      tips: w.zh.tips,
+    }
+  }
+  return w
 }
