@@ -39,6 +39,8 @@ export interface WorkflowDefinition {
   defaultVideoModel: string
   trending?: boolean
   previewVideoUrl?: string
+  hasMusic?: boolean
+  musicStyle?: string
   zh?: {
     title: string
     subtitle: string
@@ -459,12 +461,15 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Use Suno\'s song structure (intro/verse/chorus) to organize your storyboard sections.',
     ],
     fields: [
+      { key: 'MUSIC_DESC', label: 'Music description', labelZh: '音乐描述', placeholder: 'e.g. A cheerful summer road trip pop song about freedom', placeholderZh: '例如：一首欢快的夏日公路旅行流行歌，关于自由', type: 'textarea' },
       { key: 'INTRO_VISUAL', label: 'Intro visual', labelZh: '前奏画面', placeholder: 'e.g. Empty street at dawn, first rays of sunlight', placeholderZh: '例如：黎明时分的空街，第一缕阳光', type: 'text' },
       { key: 'VERSE_VISUAL', label: 'Verse visual', labelZh: '主歌画面', placeholder: 'e.g. Character walking through a bustling market', placeholderZh: '例如：角色穿过热闹的集市', type: 'text' },
       { key: 'CHORUS_VISUAL', label: 'Chorus visual', labelZh: '副歌画面', placeholder: 'e.g. Dancing under cherry blossoms at sunset', placeholderZh: '例如：夕阳下在樱花树下起舞', type: 'text' },
     ],
     defaultImageModel: 'gpt-image-2',
     defaultVideoModel: 'seedance-2.0-image-to-video',
+    hasMusic: true,
+    musicStyle: 'pop, electronic, upbeat',
     previewVideoUrl: 'https://github.com/user-attachments/assets/fd4be5c7-cd02-4a77-ae07-6b80efeff201',
     zh: {
       title: 'Suno 音乐 MV',

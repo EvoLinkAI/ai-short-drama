@@ -63,6 +63,11 @@ export default function WorkflowDetailPage() {
       resolution: '2K',
       quality: 'medium',
       duration,
+      ...(rawWorkflow?.hasMusic && fieldValues['MUSIC_DESC'] ? {
+        musicPrompt: fieldValues['MUSIC_DESC'],
+        musicStyle: rawWorkflow.musicStyle || 'pop, electronic',
+        musicTitle: 'Workflow Track',
+      } : {}),
     })
 
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: 'smooth' }), 300)
@@ -284,6 +289,17 @@ export default function WorkflowDetailPage() {
               />
             </div>
 
+            {(wf.status === 'generating_music' || wf.status === 'music_done' || wf.musicUrl) && (
+              <div className="mb-4 p-4 bg-gradient-to-r from-[#faf5ff] to-[#f3e8ff] border border-[#e9d5ff] rounded-xl flex items-center gap-4">
+                <div className="shrink-0 w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-[12px] font-mono">♪</div>
+                {wf.musicUrl ? (
+                  <audio src={wf.musicUrl} controls className="flex-1 h-8" />
+                ) : (
+                  <div className="text-[13px] text-[#7c3aed] font-mono animate-pulse">Generating music...</div>
+                )}
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-center">
               <div className="bg-[#fafafa] border border-[#e5e5e5] rounded-2xl aspect-video overflow-hidden flex items-center justify-center">
                 {wf.imageUrl ? (
@@ -291,7 +307,9 @@ export default function WorkflowDetailPage() {
                   <img src={wf.imageUrl} alt="Generated storyboard" className="w-full h-full object-cover" />
                 ) : (
                   <div className="text-[13px] text-[#999] font-mono">
-                    {wf.status === 'generating_image' ? t('generatingImage') : t('waiting')}
+                    {wf.status === 'generating_music' || wf.status === 'music_done'
+                      ? t('waiting')
+                      : wf.status === 'generating_image' ? t('generatingImage') : t('waiting')}
                   </div>
                 )}
               </div>

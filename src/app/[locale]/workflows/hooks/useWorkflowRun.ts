@@ -5,6 +5,8 @@ import { apiFetch } from '@/lib/api-fetch'
 
 export type WorkflowStatus =
   | 'idle'
+  | 'generating_music'
+  | 'music_done'
   | 'generating_image'
   | 'image_done'
   | 'generating_video'
@@ -20,10 +22,14 @@ interface WorkflowRunParams {
   resolution?: string
   quality?: string
   duration?: number
+  musicPrompt?: string
+  musicStyle?: string
+  musicTitle?: string
 }
 
 interface WorkflowRunState {
   status: WorkflowStatus
+  musicUrl: string | null
   imageUrl: string | null
   videoUrl: string | null
   progress: number
@@ -63,6 +69,7 @@ async function pollTask(taskId: string): Promise<{ resultUrls: string[]; error: 
 export function useWorkflowRun() {
   const [state, setState] = useState<WorkflowRunState>({
     status: 'idle',
+    musicUrl: null,
     imageUrl: null,
     videoUrl: null,
     progress: 0,
@@ -72,7 +79,45 @@ export function useWorkflowRun() {
 
   const run = useCallback(async (params: WorkflowRunParams) => {
     abortRef.current = false
-    setState({ status: 'generating_image', imageUrl: null, videoUrl: null, progress: 10, error: null })
+    const hasMusic = !!params.musicPrompt
+
+    // ── Step 0: Music (optional, only for music-video workflow) ──
+    let musicUrl: string | null = null
+    if (hasMusic) {
+      setState({ status: 'generating_music', musicUrl: null, imageUrl: null, videoUrl: null, progress: 5, error: null })
+
+      try {
+        const musicTaskId = await submitStep({
+          step: 'music',
+          prompt: params.musicPrompt,
+          style: params.musicStyle || '',
+          title: params.musicTitle || 'Workflow Track',
+          customMode: true,
+          instrumental: false,
+        })
+
+        setState((s) => ({ ...s, progress: 12 }))
+        const musicResult = await pollTask(musicTaskId)
+        if (abortRef.current) return
+        if (musicResult.error || musicResult.resultUrls.length === 0) {
+          setState((s) => ({ ...s, status: 'error', error: musicResult.error || 'No music generated' }))
+          return
+        }
+
+        musicUrl = musicResult.resultUrls[0]
+        setState((s) => ({ ...s, status: 'music_done', musicUrl, progress: 20 }))
+        await new Promise((r) => setTimeout(r, 800))
+        if (abortRef.current) return
+      } catch (err) {
+        if (!abortRef.current) {
+          setState((s) => ({ ...s, status: 'error', error: err instanceof Error ? err.message : 'Music generation failed' }))
+        }
+        return
+      }
+    }
+
+    // ── Step 1: Image ──
+    setState((s) => ({ ...s, status: 'generating_image', progress: hasMusic ? 25 : 10 }))
 
     try {
       const imageTaskId = await submitStep({
@@ -84,7 +129,7 @@ export function useWorkflowRun() {
         quality: params.quality,
       })
 
-      setState((s) => ({ ...s, progress: 25 }))
+      setState((s) => ({ ...s, progress: hasMusic ? 35 : 25 }))
       const imageResult = await pollTask(imageTaskId)
       if (abortRef.current) return
       if (imageResult.error || imageResult.resultUrls.length === 0) {
@@ -93,20 +138,19 @@ export function useWorkflowRun() {
       }
 
       const imageUrl = imageResult.resultUrls[0]
-      setState({ status: 'image_done', imageUrl, videoUrl: null, progress: 50, error: null })
-
-      // small pause for UX — let user see the image
+      setState((s) => ({ ...s, status: 'image_done', imageUrl, progress: hasMusic ? 55 : 50 }))
       await new Promise((r) => setTimeout(r, 800))
       if (abortRef.current) return
 
-      setState((s) => ({ ...s, status: 'generating_video', progress: 60 }))
+      // ── Step 2: Video ──
+      setState((s) => ({ ...s, status: 'generating_video', progress: hasMusic ? 60 : 60 }))
       const videoTaskId = await submitStep({
         step: 'video',
         prompt: params.videoPrompt,
         imageUrl,
-        model: params.videoModel || 'seedance-2.0',
+        model: params.videoModel || 'seedance-2.0-image-to-video',
         size: params.size || '16:9',
-        duration: params.duration || 5,
+        duration: params.duration || 10,
       })
 
       setState((s) => ({ ...s, progress: 75 }))
@@ -117,7 +161,7 @@ export function useWorkflowRun() {
         return
       }
 
-      setState({ status: 'video_done', imageUrl, videoUrl: videoResult.resultUrls[0], progress: 100, error: null })
+      setState({ status: 'video_done', musicUrl, imageUrl, videoUrl: videoResult.resultUrls[0], progress: 100, error: null })
     } catch (err) {
       if (!abortRef.current) {
         setState((s) => ({ ...s, status: 'error', error: err instanceof Error ? err.message : 'Unknown error' }))
@@ -127,7 +171,7 @@ export function useWorkflowRun() {
 
   const reset = useCallback(() => {
     abortRef.current = true
-    setState({ status: 'idle', imageUrl: null, videoUrl: null, progress: 0, error: null })
+    setState({ status: 'idle', musicUrl: null, imageUrl: null, videoUrl: null, progress: 0, error: null })
   }, [])
 
   return { ...state, run, reset }
