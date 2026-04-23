@@ -62,7 +62,7 @@ export default function WorkflowDetailPage() {
       <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-mono mb-4">Workflow not found</h1>
-          <Link href={{ pathname: '/workflows' }} className="text-indigo-600 hover:underline">
+          <Link href="/workflows" className="text-indigo-600 hover:underline">
             ← Back to workflows
           </Link>
         </div>
@@ -73,13 +73,13 @@ export default function WorkflowDetailPage() {
   const related = WORKFLOWS.filter((w) => w.slug !== slug).slice(0, 3)
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
-      <div className="max-w-[1280px] mx-auto bg-white border-x border-[#eaeaea] min-h-screen">
+    <div className="min-h-screen bg-white">
+      <div>
         <Navbar />
 
         {/* Breadcrumb */}
         <div className="pt-5 px-10 font-mono text-[12px] text-[#aaa] max-w-[1180px] mx-auto">
-          <Link href={{ pathname: '/workflows' }} className="text-[#555] hover:text-[#0a0a0a]">Workflows</Link>
+          <Link href="/workflows" className="text-[#555] hover:text-[#0a0a0a]">Workflows</Link>
           {' / '}
           <span>{workflow.title}</span>
         </div>
@@ -364,7 +364,7 @@ export default function WorkflowDetailPage() {
             {related.map((w) => (
               <Link
                 key={w.slug}
-                href={{ pathname: '/workflows/[slug]' as never, params: { slug: w.slug } } as never}
+                href={`/workflows/${w.slug}`}
                 className="bg-white border border-[#e5e5e5] rounded-xl p-4 hover:border-[#0a0a0a] transition"
               >
                 <div className="font-mono text-[11px] text-[#999] mb-2">case {String(w.caseNumber).padStart(2, '0')} · {w.category}</div>

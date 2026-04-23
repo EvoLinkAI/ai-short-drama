@@ -14,7 +14,7 @@ for (const w of WORKFLOWS) {
 function WorkflowCard({ workflow }: { workflow: WorkflowDefinition }) {
   return (
     <Link
-      href={{ pathname: '/workflows/[slug]' as never, params: { slug: workflow.slug } } as never}
+      href={`/workflows/${workflow.slug}`}
       className="group block bg-white border border-[#e5e5e5] rounded-2xl overflow-hidden transition-all hover:border-[#0a0a0a] hover:-translate-y-0.5"
     >
       {workflow.trending && (
@@ -66,8 +66,8 @@ export default function WorkflowsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
-      <div className="max-w-[1280px] mx-auto bg-white border-x border-[#eaeaea] min-h-screen">
+    <div className="min-h-screen bg-white">
+      <div>
         <Navbar />
 
         {/* Hero */}
