@@ -23,11 +23,24 @@ function WorkflowCard({ workflow, runLabel }: { workflow: WorkflowDefinition; ru
           Trending
         </div>
       )}
-      <div className="relative aspect-video bg-gradient-to-br from-[#f5f3ff] to-[#ede9fe] flex items-center justify-center border-b border-[#eee]">
-        <div className="w-12 h-12 rounded-full bg-black/80 flex items-center justify-center">
-          <div className="w-0 h-0 border-l-[10px] border-l-white border-t-[7px] border-t-transparent border-b-[7px] border-b-transparent ml-1" />
-        </div>
-        <span className="absolute top-3 left-3 px-2.5 py-1 bg-white text-[11px] font-mono text-[#888] rounded-full border border-[#e5e5e5]">
+      <div className="relative aspect-video bg-gradient-to-br from-[#1a0f2a] to-[#0a0515] flex items-center justify-center border-b border-[#eee] overflow-hidden">
+        {workflow.previewVideoUrl ? (
+          <video
+            src={workflow.previewVideoUrl}
+            muted
+            loop
+            playsInline
+            preload="none"
+            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+            onMouseEnter={(e) => (e.target as HTMLVideoElement).play().catch(() => {})}
+            onMouseLeave={(e) => { const v = e.target as HTMLVideoElement; v.pause(); v.currentTime = 0 }}
+          />
+        ) : (
+          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+            <div className="w-0 h-0 border-l-[10px] border-l-white border-t-[7px] border-t-transparent border-b-[7px] border-b-transparent ml-1" />
+          </div>
+        )}
+        <span className="absolute top-3 left-3 px-2.5 py-1 bg-white/90 text-[11px] font-mono text-[#888] rounded-full border border-white/20">
           case {String(workflow.caseNumber).padStart(2, '0')}
         </span>
       </div>

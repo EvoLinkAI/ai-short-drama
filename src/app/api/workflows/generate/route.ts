@@ -31,13 +31,19 @@ export const POST = apiHandler(async (request: NextRequest) => {
     if (body.quality) payload.quality = body.quality
   } else if (step === 'video') {
     endpoint = `${EVOLINK_API_BASE}/videos/generations`
+    const videoModel = body.imageUrl
+      ? 'seedance-2.0-image-to-video'
+      : 'seedance-2.0-text-to-video'
     payload = {
-      model: body.model || 'seedance-2.0',
-      image_url: body.imageUrl,
+      model: body.model || videoModel,
       prompt: body.prompt || '',
+    }
+    if (body.imageUrl) {
+      payload.image_urls = [body.imageUrl]
     }
     if (body.duration) payload.duration = Number(body.duration)
     if (body.size) payload.aspect_ratio = body.size
+    payload.generate_audio = true
   } else {
     return NextResponse.json({ error: 'Invalid step' }, { status: 400 })
   }

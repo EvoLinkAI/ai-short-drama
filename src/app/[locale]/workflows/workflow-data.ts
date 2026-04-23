@@ -28,6 +28,7 @@ export interface WorkflowDefinition {
   defaultImageModel: string
   defaultVideoModel: string
   trending?: boolean
+  previewVideoUrl?: string
 }
 
 export const WORKFLOW_CATEGORIES = [
@@ -76,7 +77,8 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Keep each storyboard panel simple — the simpler the content, the more accurate the motion output.',
     ],
     defaultImageModel: 'gpt-image-2',
-    defaultVideoModel: 'seedance-2.0',
+    defaultVideoModel: 'seedance-2.0-image-to-video',
+    previewVideoUrl: 'https://github.com/user-attachments/assets/ac25fc3d-b6cb-4149-a8ba-e7e10c5b1faa',
   },
   {
     slug: '3x3-grid-storyboard',
@@ -115,8 +117,9 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Grid beats panel-by-panel because Seedance reads all 9 frames as one motion intent.',
     ],
     defaultImageModel: 'gpt-image-2',
-    defaultVideoModel: 'seedance-2.0',
+    defaultVideoModel: 'seedance-2.0-image-to-video',
     trending: true,
+    previewVideoUrl: 'https://github.com/user-attachments/assets/00f32388-a17b-4b9c-8da3-1956436ce91b',
   },
   {
     slug: 'character-sheet-animation',
@@ -155,7 +158,8 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Avoid switching character perspectives within a single clip.',
     ],
     defaultImageModel: 'gpt-image-2',
-    defaultVideoModel: 'seedance-2.0',
+    defaultVideoModel: 'seedance-2.0-image-to-video',
+    previewVideoUrl: 'https://github.com/user-attachments/assets/92a0aa56-441f-40db-b9c9-13410254cb3f',
   },
   {
     slug: 'anime-op-style',
@@ -193,7 +197,8 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Use storyboard control for key character shots, free animation for action sequences.',
     ],
     defaultImageModel: 'gpt-image-2',
-    defaultVideoModel: 'seedance-2.0',
+    defaultVideoModel: 'seedance-2.0-image-to-video',
+    previewVideoUrl: 'https://github.com/user-attachments/assets/f08a2fee-89a7-4c7c-a58a-f1306f87419a',
   },
   {
     slug: 'app-mvp-demo',
@@ -231,7 +236,8 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Keep the demo under 15 seconds — attention spans are short on social media.',
     ],
     defaultImageModel: 'gpt-image-2',
-    defaultVideoModel: 'seedance-2.0',
+    defaultVideoModel: 'seedance-2.0-image-to-video',
+    previewVideoUrl: 'https://github.com/user-attachments/assets/09d81a41-b5c5-47f3-8c67-442b7a93b019',
   },
   {
     slug: '15-second-commercial',
@@ -270,7 +276,8 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       '60-second spot = 15-18 panels at 3-4 seconds each.',
     ],
     defaultImageModel: 'gpt-image-2',
-    defaultVideoModel: 'seedance-2.0',
+    defaultVideoModel: 'seedance-2.0-image-to-video',
+    previewVideoUrl: 'https://github.com/user-attachments/assets/09ae3c57-b8fb-4323-ba76-7777541fe4a3',
   },
   {
     slug: 'music-video-suno',
@@ -308,7 +315,8 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Use Suno\'s song structure (intro/verse/chorus) to organize your storyboard sections.',
     ],
     defaultImageModel: 'gpt-image-2',
-    defaultVideoModel: 'seedance-2.0',
+    defaultVideoModel: 'seedance-2.0-image-to-video',
+    previewVideoUrl: 'https://github.com/user-attachments/assets/fd4be5c7-cd02-4a77-ae07-6b80efeff201',
   },
   {
     slug: 'cyberpunk-short-film',
@@ -347,7 +355,8 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Keep clip duration under 4 seconds — shorter clips accumulate less distortion.',
     ],
     defaultImageModel: 'gpt-image-2',
-    defaultVideoModel: 'seedance-2.0',
+    defaultVideoModel: 'seedance-2.0-image-to-video',
+    previewVideoUrl: 'https://github.com/user-attachments/assets/db6ebb63-90dc-47c5-96c5-ab2fa53ed56d',
   },
   {
     slug: 'game-interactive-ui',
@@ -385,7 +394,8 @@ export const WORKFLOWS: WorkflowDefinition[] = [
       'Include HUD elements in the image — they give Seedance clear layout cues.',
     ],
     defaultImageModel: 'gpt-image-2',
-    defaultVideoModel: 'seedance-2.0',
+    defaultVideoModel: 'seedance-2.0-image-to-video',
+    previewVideoUrl: 'https://github.com/user-attachments/assets/961c4bc4-c83c-49d3-bc14-7b128e80bc17',
   },
 ]
 
