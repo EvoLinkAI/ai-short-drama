@@ -31,19 +31,26 @@ export const POST = apiHandler(async (request: NextRequest) => {
     if (body.quality) payload.quality = body.quality
   } else if (step === 'video') {
     endpoint = `${EVOLINK_API_BASE}/videos/generations`
-    const videoModel = body.imageUrl
-      ? 'seedance-2.0-image-to-video'
-      : 'seedance-2.0-text-to-video'
+    const hasAudio = !!body.audioUrl
+    const hasImage = !!body.imageUrl
+    const defaultModel = hasAudio
+      ? 'seedance-2.0-reference-to-video'
+      : hasImage
+        ? 'seedance-2.0-image-to-video'
+        : 'seedance-2.0-text-to-video'
     payload = {
-      model: body.model || videoModel,
+      model: body.model || defaultModel,
       prompt: body.prompt || '',
     }
-    if (body.imageUrl) {
+    if (hasImage) {
       payload.image_urls = [body.imageUrl]
+    }
+    if (hasAudio) {
+      payload.audio_urls = [body.audioUrl]
     }
     if (body.duration) payload.duration = Number(body.duration)
     if (body.size) payload.aspect_ratio = body.size
-    payload.generate_audio = true
+    payload.generate_audio = !hasAudio
   } else if (step === 'music') {
     endpoint = `${EVOLINK_API_BASE}/audios/generations`
     payload = {

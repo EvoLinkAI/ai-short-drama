@@ -143,15 +143,18 @@ export function useWorkflowRun() {
       if (abortRef.current) return
 
       // ── Step 2: Video ──
-      setState((s) => ({ ...s, status: 'generating_video', progress: hasMusic ? 60 : 60 }))
-      const videoTaskId = await submitStep({
+      setState((s) => ({ ...s, status: 'generating_video', progress: 60 }))
+      const videoStepParams: Record<string, unknown> = {
         step: 'video',
         prompt: params.videoPrompt,
         imageUrl,
-        model: params.videoModel || 'seedance-2.0-image-to-video',
         size: params.size || '16:9',
         duration: params.duration || 10,
-      })
+      }
+      if (musicUrl) {
+        videoStepParams.audioUrl = musicUrl
+      }
+      const videoTaskId = await submitStep(videoStepParams)
 
       setState((s) => ({ ...s, progress: 75 }))
       const videoResult = await pollTask(videoTaskId)
