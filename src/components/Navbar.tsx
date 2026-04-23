@@ -56,6 +56,13 @@ export default function Navbar() {
               >
                 {t('assetHub')}
               </Link>
+              <Link
+                href={{ pathname: '/workflows' }}
+                className="relative text-sm text-[#525252] hover:text-[#171717] font-medium transition-colors"
+              >
+                Workflows
+                <span className="absolute -top-1.5 -right-5 px-1.5 py-px bg-black text-white text-[8px] rounded">NEW</span>
+              </Link>
             </>
           )}
         </div>

@@ -9,6 +9,7 @@ type EventName =
   | 'video_download'
   | 'voice_design'
   | 'voice_generate_all'
+  | 'workflow_run'
 
 declare global {
   interface Window {
