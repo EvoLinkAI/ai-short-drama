@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useSession } from 'next-auth/react'
 import Navbar from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { Link } from '@/i18n/navigation'
@@ -46,7 +45,6 @@ function WorkflowCard({ workflow }: { workflow: WorkflowDefinition }) {
 }
 
 export default function WorkflowsPage() {
-  const { data: session } = useSession()
   const [activeCategory, setActiveCategory] = useState('all')
 
   const filtered = activeCategory === 'all'
@@ -70,7 +68,7 @@ export default function WorkflowsPage() {
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
       <div className="max-w-[1280px] mx-auto bg-white border-x border-[#eaeaea] min-h-screen">
-        <Navbar session={session} />
+        <Navbar />
 
         {/* Hero */}
         <div className="py-20 px-10 text-center max-w-[900px] mx-auto">

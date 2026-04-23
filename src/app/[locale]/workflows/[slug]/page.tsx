@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
-import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
@@ -15,8 +14,7 @@ const RATIO_OPTIONS = ['16:9', '9:16', '1:1']
 const DURATION_OPTIONS = [3, 5, 10]
 
 export default function WorkflowDetailPage() {
-  const { data: session } = useSession()
-  const params = useParams()
+  const params = useParams() ?? {}
   const slug = typeof params.slug === 'string' ? params.slug : ''
   const workflow = getWorkflowBySlug(slug)
   const wf = useWorkflowRun()
@@ -77,7 +75,7 @@ export default function WorkflowDetailPage() {
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
       <div className="max-w-[1280px] mx-auto bg-white border-x border-[#eaeaea] min-h-screen">
-        <Navbar session={session} />
+        <Navbar />
 
         {/* Breadcrumb */}
         <div className="pt-5 px-10 font-mono text-[12px] text-[#aaa] max-w-[1180px] mx-auto">
