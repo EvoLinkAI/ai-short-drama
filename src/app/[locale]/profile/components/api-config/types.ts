@@ -182,6 +182,8 @@ export const PRESET_MODELS: PresetModel[] = [
     { modelId: 'gemini-3-pro-image-preview', name: 'NanoBanana Pro', type: 'image', provider: 'evolink' },
     { modelId: 'seedream-5.0-lite', name: 'Seedream 5.0 Lite', type: 'image', provider: 'evolink' },
     { modelId: 'z-image-turbo', name: 'Z-Image-Turbo', type: 'image', provider: 'evolink' },
+    { modelId: 'gpt-image-2', name: 'GPT Image 2', type: 'image', provider: 'evolink' },
+    { modelId: 'gpt-image-2-beta', name: 'GPT Image 2 Beta', type: 'image', provider: 'evolink' },
     // EvoLink 视频模型
     { modelId: 'kling-o3-image-to-video', name: 'Kling O3', type: 'video', provider: 'evolink' },
     { modelId: 'kling-v3-image-to-video', name: 'Kling V3', type: 'video', provider: 'evolink' },

@@ -3,7 +3,10 @@ import type { OfficialModelModality } from '@/lib/providers/official/model-regis
 
 const EVOLINK_CATALOG: Readonly<Record<OfficialModelModality, readonly string[]>> = {
   llm: [],
-  image: [],
+  image: [
+    'gpt-image-2',
+    'gpt-image-2-beta',
+  ],
   video: [],
   audio: [
     'qwen3-tts-vd',

@@ -19,6 +19,7 @@ const EVOLINK_IMAGE_ALLOWED_OPTIONS = new Set([
   'modelKey',
   'aspectRatio',
   'resolution',
+  'quality',
 ])
 
 export class EvolinkImageGenerator extends BaseImageGenerator {
@@ -33,10 +34,12 @@ export class EvolinkImageGenerator extends BaseImageGenerator {
     const {
       aspectRatio,
       resolution,
+      quality,
       modelId: optModelId = 'z-image-turbo',
     } = options as {
       aspectRatio?: string
       resolution?: string
+      quality?: string
       modelId?: string
       provider?: string
       modelKey?: string
@@ -54,6 +57,7 @@ export class EvolinkImageGenerator extends BaseImageGenerator {
       action: 'evolink_image_generate',
     })
 
+    const isGptImage2 = optModelId.startsWith('gpt-image-2')
     const body: Record<string, unknown> = {
       model: optModelId,
       prompt,
@@ -61,8 +65,13 @@ export class EvolinkImageGenerator extends BaseImageGenerator {
     if (aspectRatio) {
       body.size = aspectRatio
     }
-    if (resolution) {
-      body.quality = resolution
+    if (isGptImage2) {
+      // GPT Image 2: resolution and quality are separate API fields
+      if (resolution) body.resolution = resolution
+      if (quality) body.quality = quality
+    } else {
+      // Other models: resolution maps to the quality field
+      if (resolution) body.quality = resolution
     }
 
     // 将参考图转为 S3 presigned URL（R2 公网可访问）
