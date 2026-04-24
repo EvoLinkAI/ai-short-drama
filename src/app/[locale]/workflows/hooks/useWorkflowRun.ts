@@ -78,6 +78,17 @@ async function pollTask(taskId: string): Promise<{ resultUrls: string[]; error: 
   return { resultUrls: [], error: 'Timeout waiting for result' }
 }
 
+async function trimAudio(audioUrl: string, duration: number): Promise<string | null> {
+  const res = await apiFetch('/api/workflows/trim-audio', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ audioUrl, duration }),
+  })
+  const data = await res.json()
+  if (data.fallback || !data.trimmedUrl) return null
+  return data.trimmedUrl
+}
+
 async function optimizeVideoPrompt(imageUrl: string, imagePrompt: string, videoPromptTemplate: string, duration: number): Promise<string> {
   const res = await apiFetch('/api/workflows/optimize-prompt', {
     method: 'POST',
@@ -193,9 +204,6 @@ export function useWorkflowRun() {
         imageUrl,
         size: params.size || '16:9',
         duration: params.duration || 10,
-      }
-      if (musicUrl) {
-        videoStepParams.audioUrl = musicUrl
       }
       const videoTaskId = await submitStep(videoStepParams)
 

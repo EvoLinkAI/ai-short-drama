@@ -62,7 +62,7 @@ export const POST = apiHandler(async (request: NextRequest) => {
       prompt: body.prompt || '',
       custom_mode: body.customMode ?? false,
       instrumental: body.instrumental ?? false,
-      duration: Math.min(15, Number(body.duration) || 15),
+      duration: 15,
     }
     if (body.style) payload.style = body.style
     if (body.title) payload.title = body.title
