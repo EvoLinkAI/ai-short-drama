@@ -9,6 +9,8 @@ export type WorkflowStatus =
   | 'music_done'
   | 'generating_image'
   | 'image_done'
+  | 'optimizing_prompt'
+  | 'prompt_optimized'
   | 'generating_video'
   | 'video_done'
   | 'error'
@@ -32,6 +34,7 @@ interface WorkflowRunState {
   musicUrl: string | null
   imageUrl: string | null
   videoUrl: string | null
+  optimizedPrompt: string | null
   progress: number
   error: string | null
 }
@@ -75,12 +78,26 @@ async function pollTask(taskId: string): Promise<{ resultUrls: string[]; error: 
   return { resultUrls: [], error: 'Timeout waiting for result' }
 }
 
+async function optimizeVideoPrompt(imageUrl: string, imagePrompt: string, videoPromptTemplate: string, duration: number): Promise<string> {
+  const res = await apiFetch('/api/workflows/optimize-prompt', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ imageUrl, imagePrompt, videoPromptTemplate, duration }),
+  })
+  const data = await res.json()
+  if (!res.ok) {
+    throw new Error(data?.error || 'Prompt optimization failed')
+  }
+  return data.optimizedPrompt
+}
+
 export function useWorkflowRun() {
   const [state, setState] = useState<WorkflowRunState>({
     status: 'idle',
     musicUrl: null,
     imageUrl: null,
     videoUrl: null,
+    optimizedPrompt: null,
     progress: 0,
     error: null,
   })
@@ -93,7 +110,7 @@ export function useWorkflowRun() {
     // ── Step 0: Music (optional, only for music-video workflow) ──
     let musicUrl: string | null = null
     if (hasMusic) {
-      setState({ status: 'generating_music', musicUrl: null, imageUrl: null, videoUrl: null, progress: 5, error: null })
+      setState({ status: 'generating_music', musicUrl: null, imageUrl: null, videoUrl: null, optimizedPrompt: null, progress: 5, error: null })
 
       try {
         const musicTaskId = await submitStep({
@@ -103,6 +120,7 @@ export function useWorkflowRun() {
           title: params.musicTitle || 'Workflow Track',
           customMode: true,
           instrumental: false,
+          duration: params.duration || 10,
         })
 
         setState((s) => ({ ...s, progress: 12 }))
@@ -126,7 +144,7 @@ export function useWorkflowRun() {
     }
 
     // ── Step 1: Image ──
-    setState((s) => ({ ...s, status: 'generating_image', progress: hasMusic ? 25 : 10 }))
+    setState((s) => ({ ...s, status: 'generating_image', imageUrl: null, videoUrl: null, optimizedPrompt: null, progress: hasMusic ? 25 : 10, error: null }))
 
     try {
       const imageTaskId = await submitStep({
@@ -147,15 +165,31 @@ export function useWorkflowRun() {
       }
 
       const imageUrl = imageResult.resultUrls[0]
-      setState((s) => ({ ...s, status: 'image_done', imageUrl, progress: hasMusic ? 55 : 50 }))
-      await new Promise((r) => setTimeout(r, 800))
+      setState((s) => ({ ...s, status: 'image_done', imageUrl, progress: hasMusic ? 45 : 40 }))
+      await new Promise((r) => setTimeout(r, 500))
       if (abortRef.current) return
 
-      // ── Step 2: Video ──
+      // ── Step 2: Optimize video prompt via LLM ──
+      setState((s) => ({ ...s, status: 'optimizing_prompt', progress: hasMusic ? 50 : 45 }))
+
+      let videoPrompt = params.videoPrompt
+      try {
+        const optimized = await optimizeVideoPrompt(imageUrl, params.imagePrompt, params.videoPrompt, params.duration || 10)
+        if (abortRef.current) return
+        videoPrompt = optimized
+        setState((s) => ({ ...s, status: 'prompt_optimized', optimizedPrompt: optimized, progress: hasMusic ? 55 : 52 }))
+        await new Promise((r) => setTimeout(r, 500))
+        if (abortRef.current) return
+      } catch (optErr) {
+        console.warn('[Workflow] Prompt optimization failed, using original:', optErr)
+        if (abortRef.current) return
+      }
+
+      // ── Step 3: Video ──
       setState((s) => ({ ...s, status: 'generating_video', progress: 60 }))
       const videoStepParams: Record<string, unknown> = {
         step: 'video',
-        prompt: params.videoPrompt,
+        prompt: videoPrompt,
         imageUrl,
         size: params.size || '16:9',
         duration: params.duration || 10,
@@ -173,7 +207,7 @@ export function useWorkflowRun() {
         return
       }
 
-      setState({ status: 'video_done', musicUrl, imageUrl, videoUrl: videoResult.resultUrls[0], progress: 100, error: null })
+      setState((s) => ({ ...s, status: 'video_done', musicUrl, imageUrl, videoUrl: videoResult.resultUrls[0], progress: 100 }))
     } catch (err) {
       if (!abortRef.current) {
         setState((s) => ({ ...s, status: 'error', error: err instanceof Error ? err.message : 'Unknown error' }))
@@ -183,7 +217,7 @@ export function useWorkflowRun() {
 
   const reset = useCallback(() => {
     abortRef.current = true
-    setState({ status: 'idle', musicUrl: null, imageUrl: null, videoUrl: null, progress: 0, error: null })
+    setState({ status: 'idle', musicUrl: null, imageUrl: null, videoUrl: null, optimizedPrompt: null, progress: 0, error: null })
   }, [])
 
   return { ...state, run, reset }

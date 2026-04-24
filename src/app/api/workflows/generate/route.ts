@@ -22,13 +22,14 @@ export const POST = apiHandler(async (request: NextRequest) => {
 
   if (step === 'image') {
     endpoint = `${EVOLINK_API_BASE}/images/generations`
+    const isBeta = (body.model || '') === 'gpt-image-2-beta'
     payload = {
       model: body.model || 'gpt-image-2',
       prompt: body.prompt,
     }
     if (body.size) payload.size = body.size
-    if (body.resolution) payload.resolution = body.resolution
-    if (body.quality) payload.quality = body.quality
+    if (!isBeta && body.resolution) payload.resolution = body.resolution
+    if (!isBeta && body.quality) payload.quality = body.quality
   } else if (step === 'video') {
     endpoint = `${EVOLINK_API_BASE}/videos/generations`
     const hasAudio = !!body.audioUrl
@@ -38,19 +39,22 @@ export const POST = apiHandler(async (request: NextRequest) => {
       : hasImage
         ? 'seedance-2.0-image-to-video'
         : 'seedance-2.0-text-to-video'
+    const videoPrompt = (body.prompt || '').slice(0, 500)
     payload = {
       model: body.model || defaultModel,
-      prompt: body.prompt || '',
+      prompt: videoPrompt,
     }
     if (hasImage) {
       payload.image_urls = [body.imageUrl]
     }
     if (hasAudio) {
       payload.audio_urls = [body.audioUrl]
+      payload.quality = '720p'
     }
-    if (body.duration) payload.duration = Number(body.duration)
+    const dur = Math.max(4, Math.min(15, Number(body.duration) || 5))
+    payload.duration = dur
     if (body.size) payload.aspect_ratio = body.size
-    payload.generate_audio = !hasAudio
+    payload.generate_audio = true
   } else if (step === 'music') {
     endpoint = `${EVOLINK_API_BASE}/audios/generations`
     payload = {
@@ -58,6 +62,7 @@ export const POST = apiHandler(async (request: NextRequest) => {
       prompt: body.prompt || '',
       custom_mode: body.customMode ?? false,
       instrumental: body.instrumental ?? false,
+      duration: Math.min(15, Number(body.duration) || 15),
     }
     if (body.style) payload.style = body.style
     if (body.title) payload.title = body.title
@@ -65,6 +70,7 @@ export const POST = apiHandler(async (request: NextRequest) => {
     return NextResponse.json({ error: 'Invalid step' }, { status: 400 })
   }
 
+  console.log(`[workflow-generate] step=${step} endpoint=${endpoint} payload=`, JSON.stringify(payload))
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
