@@ -69,7 +69,7 @@ With a single [EvoLink](https://evolink.ai/) API key, you get access to:
 |------|--------|
 | **Text/LLM** | GPT-4o, Gemini, Claude, Doubao, Qwen, and more |
 | **Image** | FLUX, Seedance, Kling, Imagen, DALL-E, and more |
-| **Video** | Kling, Seedance 2.0, Vidu, Veo, MiniMax, and more |
+| **Video** | Kling, [Seedance 2.5 Early Access](https://evolink.ai/launch/seedance-2-5?utm_source=github&utm_medium=readme&utm_campaign=ai-short-drama), current Seedance 2 API path, Vidu, Veo, MiniMax, and more |
 | **Voice/TTS** | CosyVoice, and more |
 
 > **No need to register with multiple AI providers.** [EvoLink](https://evolink.ai/) aggregates all major models behind a single API key. Register once, use everything. Advanced users can also configure individual provider keys if preferred.
