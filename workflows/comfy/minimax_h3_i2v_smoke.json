@@ -1,0 +1,79 @@
+{
+  "_meta": {
+    "title": "aidrama minimax_h3_i2v_smoke (DEPRECATED stub)",
+    "DEPRECATED": true,
+    "tierId": "local.comfy.minimax_h3",
+    "note": "DEPRECATED \u2014 wrong field contracts (CLIPTextEncode/positive, num_frames, image, SaveImage). Kept for regression only. Production path is minimax_h3_i2v.json (official API Format). See OFFICIAL_I2V_ALIGN.md and ../H3_STUB_TO_OFFICIAL_I2V_CHECKLIST.md.",
+    "officialTemplate": "https://github.com/Comfy-Org/workflow_templates/blob/main/templates/video_minimax_h3_i2v.json",
+    "replacedBy": "minimax_h3_i2v.json",
+    "hypothesis": "Node IDs 10/20/30/31/32/40/90 are obsolete stub contracts \u2014 do not use for production."
+  },
+  "10": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "h3 smoke",
+      "clip": [
+        "31",
+        0
+      ]
+    }
+  },
+  "20": {
+    "class_type": "MiniMaxH3ImageToVideo",
+    "inputs": {
+      "width": 768,
+      "height": 1280,
+      "num_frames": 124,
+      "image": [
+        "40",
+        0
+      ],
+      "positive": [
+        "10",
+        0
+      ],
+      "vae": [
+        "32",
+        0
+      ],
+      "model": [
+        "30",
+        0
+      ]
+    }
+  },
+  "30": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_fl2va_pruned_int8_convrot.safetensors"
+    }
+  },
+  "31": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
+    }
+  },
+  "32": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+    }
+  },
+  "40": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "h3_ref_fixture.png"
+    }
+  },
+  "90": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "aidrama_h3_smoke",
+      "images": [
+        "20",
+        0
+      ]
+    }
+  }
+}

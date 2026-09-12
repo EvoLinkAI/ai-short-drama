@@ -1,0 +1,354 @@
+// V11 Wave2 ADDITIVE Prisma fragment — DRAFT ONLY.
+// W11B-FIX-01: map short names for 2 @@unique (MySQL 64-char).
+// DO NOT merge without human review. NO db push / migrate deploy in Wave2.
+// Source: /workspace/v11/wave2/PRISMA_ADDITIVE_NAMES.md
+// MySQL (ADR-0003). Evidence/history: onDelete Restrict when wired.
+
+// --- ProjectManifest ---
+model V11ProjectManifest {
+  id                 String   @id @db.VarChar(192)
+  projectId          String   @db.VarChar(192)
+  schemaVersion      String   @db.VarChar(64)
+  profile            String   @db.VarChar(16)
+  aspectRatio        String   @db.VarChar(32)
+  lockPolicyVersion  String   @db.VarChar(64)
+  budgetEnvelopeRef  String?  @db.VarChar(192)
+  contentSha256      String   @db.VarChar(64)
+  createdAt          DateTime @db.DateTime(3)
+
+  @@index([projectId])
+  @@map("v11_project_manifests")
+}
+
+model V11StoryBibleRevision {
+  id                     String   @id @db.VarChar(192)
+  projectId              String   @db.VarChar(192)
+  revisionNo             Int
+  predecessorRevisionId  String?  @db.VarChar(192)
+  contentSha256          String   @db.VarChar(64)
+  factIdsJson            String   @db.LongText
+  createdAt              DateTime @db.DateTime(3)
+
+  @@unique([projectId, revisionNo])
+  @@index([projectId])
+  @@map("v11_story_bible_revisions")
+}
+
+model V11CanonFact {
+  id        String   @id @db.VarChar(192)
+  projectId String   @db.VarChar(192)
+  key       String   @db.VarChar(192)
+  valueJson String   @db.LongText
+  createdAt DateTime @db.DateTime(3)
+
+  @@index([projectId, key])
+  @@map("v11_canon_facts")
+}
+
+model V11VisualBibleRevision {
+  id                String    @id @db.VarChar(192)
+  projectId         String    @db.VarChar(192)
+  revisionNo        Int
+  styleKey          String    @db.VarChar(192)
+  lensSetJson       String    @db.LongText
+  colorGradeKey     String    @db.VarChar(192)
+  lightingLogicKey  String    @db.VarChar(192)
+  frameRate         Float
+  motionBanKeysJson String    @db.LongText
+  contentSha256     String    @db.VarChar(64)
+  lockedBy          String?   @db.VarChar(192)
+  lockedAt          DateTime? @db.DateTime(3)
+  createdAt         DateTime  @db.DateTime(3)
+
+  @@unique([projectId, revisionNo])
+  @@index([projectId])
+  @@map("v11_visual_bible_revisions")
+}
+
+model V11CharacterDnaRevision {
+  id                      String    @id @db.VarChar(192)
+  projectId               String    @db.VarChar(192)
+  characterId             String    @db.VarChar(192)
+  revisionNo              Int
+  predecessorRevisionId   String?   @db.VarChar(192)
+  appearanceRevisionId    String    @db.VarChar(192)
+  appearanceContentSha256 String    @db.VarChar(64)
+  wardrobeKeysJson        String    @db.LongText
+  propKeysJson            String    @db.LongText
+  propBibleRevisionIdsJson String   @db.LongText
+  voiceRevisionId         String    @db.VarChar(192)
+  voiceKey                String    @db.VarChar(192)
+  voiceContentSha256      String    @db.VarChar(64)
+  visualBibleRevisionId   String?   @db.VarChar(192)
+  visualBibleContentSha256 String?  @db.VarChar(64)
+  identityPolicyId        String    @db.VarChar(192)
+  identityPolicyVersion   String    @db.VarChar(64)
+  minIdentityScore        Float
+  poseTolerance           Float
+  referenceBindingsJson   String    @db.LongText
+  lockedBy                String?   @db.VarChar(192)
+  lockedAt                DateTime? @db.DateTime(3)
+  contentSha256           String    @db.VarChar(64)
+  createdAt               DateTime  @db.DateTime(3)
+
+  @@unique([projectId, characterId, revisionNo])
+  @@index([appearanceRevisionId])
+  @@index([projectId, characterId])
+  @@map("v11_character_dna_revisions")
+}
+
+model V11SceneBibleRevision {
+  id                     String   @id @db.VarChar(192)
+  projectId              String   @db.VarChar(192)
+  locationId             String   @db.VarChar(192)
+  revisionNo             Int
+  predecessorRevisionId  String?  @db.VarChar(192)
+  artifactRevisionId     String?  @db.VarChar(192)
+  contentSha256          String   @db.VarChar(64)
+  createdAt              DateTime @db.DateTime(3)
+
+  @@unique([projectId, locationId, revisionNo])
+  @@index([projectId, locationId])
+  @@index([artifactRevisionId])
+  @@map("v11_scene_bible_revisions")
+}
+
+model V11PropBibleRevision {
+  id                     String   @id @db.VarChar(192)
+  projectId              String   @db.VarChar(192)
+  propId                 String   @db.VarChar(192)
+  revisionNo             Int
+  predecessorRevisionId  String?  @db.VarChar(192)
+  stateKey               String   @db.VarChar(192)
+  artifactRevisionId     String?  @db.VarChar(192)
+  contentSha256          String   @db.VarChar(64)
+  createdAt              DateTime @db.DateTime(3)
+
+  @@unique([projectId, propId, revisionNo])
+  @@index([projectId, propId])
+  @@index([artifactRevisionId])
+  @@map("v11_prop_bible_revisions")
+}
+
+model V11EpisodeManifestRevision {
+  id                             String   @id @db.VarChar(192)
+  projectId                      String   @db.VarChar(192)
+  episodeKey                     String   @db.VarChar(192)
+  revisionNo                     Int
+  shotSpecIdsJson                String   @db.LongText
+  durationBudgetSec              Float?
+  lockedStoryBibleRevisionId     String   @db.VarChar(192)
+  lockedVisualBibleRevisionId    String   @db.VarChar(192)
+  lockedCharacterDnaRevisionIdsJson String @db.LongText
+  contentSha256                  String   @db.VarChar(64)
+  createdAt                      DateTime @db.DateTime(3)
+
+  @@unique([projectId, episodeKey, revisionNo], map: "v11_emr_proj_ep_rev_key")
+  @@index([projectId, episodeKey])
+  @@map("v11_episode_manifest_revisions")
+}
+
+model V11ShotSpecRevision {
+  id                     String    @id @db.VarChar(192)
+  projectId              String    @db.VarChar(192)
+  episodeManifestId      String    @db.VarChar(192)
+  shotKey                String    @db.VarChar(192)
+  revisionNo             Int
+  tier                   String    @db.VarChar(8)
+  durationSec            Float
+  characterIdsJson       String    @db.LongText
+  sceneBibleRevisionId   String    @db.VarChar(192)
+  cameraJson             String    @db.LongText
+  blocking               String    @db.LongText
+  performanceNotes       String?   @db.LongText
+  dialogueRef            String?   @db.VarChar(192)
+  continuityConstraintsJson String @db.LongText
+  humanReviewRequired    Boolean
+  lockedBy               String?   @db.VarChar(192)
+  lockedAt               DateTime? @db.DateTime(3)
+  contentSha256          String    @db.VarChar(64)
+  createdAt              DateTime  @db.DateTime(3)
+
+  @@unique([projectId, episodeManifestId, shotKey, revisionNo], map: "v11_ssr_proj_epm_shot_rev_key")
+  @@index([episodeManifestId, shotKey])
+  @@index([projectId, episodeManifestId])
+  @@map("v11_shot_spec_revisions")
+}
+
+model V11TakeManifest {
+  id            String   @id @db.VarChar(192)
+  projectId     String   @db.VarChar(192)
+  subjectKind   String   @db.VarChar(64)
+  subjectId     String   @db.VarChar(192)
+  purpose       String   @db.VarChar(64)
+  policyId      String   @db.VarChar(192)
+  policyVersion String   @db.VarChar(64)
+  createdAt     DateTime @db.DateTime(3)
+
+  @@index([projectId, subjectKind, subjectId])
+  @@map("v11_take_manifests")
+}
+
+model V11Take {
+  id                 String   @id @db.VarChar(192)
+  takeManifestId     String   @db.VarChar(192)
+  ordinal            Int
+  artifactRevisionId String   @db.VarChar(192)
+  createdAt          DateTime @db.DateTime(3)
+
+  @@unique([takeManifestId, ordinal])
+  @@index([artifactRevisionId])
+  @@map("v11_takes")
+}
+
+model V11TakeSelection {
+  id             String   @id @db.VarChar(192)
+  takeManifestId String   @db.VarChar(192)
+  takeId         String   @db.VarChar(192)
+  selectedBy     String?  @db.VarChar(192)
+  createdAt      DateTime @db.DateTime(3)
+
+  @@index([takeManifestId, createdAt])
+  @@index([takeId])
+  @@map("v11_take_selections")
+}
+
+model V11TakeSelectionHead {
+  takeManifestId String  @id @db.VarChar(192)
+  version        Int
+  currentTakeId  String? @db.VarChar(192)
+
+  @@map("v11_take_selection_heads")
+}
+
+model V11QcReport {
+  id                 String   @id @db.VarChar(192)
+  projectId          String   @db.VarChar(192)
+  episodeManifestId  String?  @db.VarChar(192)
+  subjectType        String   @db.VarChar(32)
+  subjectId          String   @db.VarChar(192)
+  profile            String   @db.VarChar(16)
+  policyId           String   @db.VarChar(192)
+  policyVersion      String   @db.VarChar(64)
+  status             String   @db.VarChar(16)
+  diagnosisIdsJson   String   @db.LongText
+  contentSha256      String   @db.VarChar(64)
+  createdAt          DateTime @db.DateTime(3)
+
+  @@index([projectId, subjectType, subjectId])
+  @@index([episodeManifestId])
+  @@index([projectId, status])
+  @@map("v11_qc_reports")
+}
+
+model V11QcGateScorecard {
+  id             String   @id @db.VarChar(192)
+  qcReportId     String   @db.VarChar(192)
+  gateId         String   @db.VarChar(16) // V11_G1..V11_G8
+  subjectType    String   @db.VarChar(32)
+  subjectId      String   @db.VarChar(192)
+  policyId       String   @db.VarChar(192)
+  policyVersion  String   @db.VarChar(64)
+  profile        String   @db.VarChar(16)
+  status         String   @db.VarChar(16)
+  score          Float?
+  hardVeto       Boolean
+  dimensionsJson String   @db.LongText
+  findingsJson   String   @db.LongText
+  provenanceJson String   @db.LongText
+  decidedAt      DateTime @db.DateTime(3)
+
+  @@unique([qcReportId, gateId])
+  @@index([subjectType, subjectId])
+  @@map("v11_qc_gate_scorecards")
+}
+
+model V11QcDiagnosis {
+  id                    String   @id @db.VarChar(192)
+  qcReportId            String   @db.VarChar(192)
+  gateId                String   @db.VarChar(16)
+  subjectType           String   @db.VarChar(32)
+  subjectId             String   @db.VarChar(192)
+  status                String   @db.VarChar(16)
+  primaryFailureCodesJson String @db.LongText
+  failedLayersJson      String   @db.LongText
+  failedShotIdsJson     String   @db.LongText
+  suggestedScopeJson    String   @db.LongText
+  escalate              Boolean
+  evidenceRefsJson      String   @db.LongText
+  createdAt             DateTime @db.DateTime(3)
+
+  @@index([qcReportId])
+  @@index([qcReportId, gateId])
+  @@index([subjectType, subjectId])
+  @@map("v11_qc_diagnoses")
+}
+
+model V11RepairPlan {
+  id                 String   @id @db.VarChar(192)
+  projectId          String   @db.VarChar(192)
+  episodeManifestId  String   @db.VarChar(192)
+  diagnosisId        String   @db.VarChar(192)
+  qcReportId         String?  @db.VarChar(192)
+  strategy           String   @db.VarChar(32)
+  scopesJson         String   @db.LongText
+  maxCycles          Int
+  budgetReservationId String? @db.VarChar(192)
+  preserveLocksJson  String   @db.LongText
+  output             String   @db.VarChar(32) // NEW_TAKE
+  takeManifestId     String?  @db.VarChar(192)
+  createdAt          DateTime @db.DateTime(3)
+
+  @@index([projectId, episodeManifestId])
+  @@index([diagnosisId])
+  @@index([qcReportId])
+  @@index([takeManifestId])
+  @@map("v11_repair_plans")
+}
+
+model V11HumanLock {
+  id            String   @id @db.VarChar(192)
+  subjectType   String   @db.VarChar(64)
+  subjectId     String   @db.VarChar(192)
+  revisionId    String   @db.VarChar(192)
+  contentSha256 String   @db.VarChar(64)
+  lockedBy      String   @db.VarChar(192)
+  lockedAt      DateTime @db.DateTime(3)
+
+  @@unique([subjectType, subjectId])
+  @@map("v11_human_locks")
+}
+
+model V11SceneStateSnapshot {
+  id            String   @id @db.VarChar(192)
+  projectId     String   @db.VarChar(192)
+  contentSha256 String   @db.VarChar(64)
+  stateJson     String   @db.LongText
+  createdAt     DateTime @db.DateTime(3)
+
+  @@index([projectId])
+  @@map("v11_scene_state_snapshots")
+}
+
+model V11ShotContinuityLock {
+  id            String   @id @db.VarChar(192)
+  shotSpecId    String   @db.VarChar(192)
+  contentSha256 String   @db.VarChar(64)
+  bindingJson   String   @db.LongText
+  createdAt     DateTime @db.DateTime(3)
+
+  @@index([shotSpecId])
+  @@map("v11_shot_continuity_locks")
+}
+
+model V11VoiceRevision {
+  id            String   @id @db.VarChar(192)
+  projectId     String   @db.VarChar(192)
+  characterId   String   @db.VarChar(192)
+  voiceKey      String   @db.VarChar(192)
+  contentSha256 String   @db.VarChar(64)
+  createdAt     DateTime @db.DateTime(3)
+
+  @@index([projectId, characterId])
+  @@map("v11_voice_revisions")
+}
